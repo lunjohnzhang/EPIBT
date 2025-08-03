@@ -230,7 +230,7 @@ void GreedyScheduler::solve(TimePoint end_time) {
 
     validate();
 
-    // если робот без задачи, то мы ее дадим. это нужно для WPPL, который не может без цели, он не самурай
+    // если робот без задачи, то мы ее дадим. это нужно для алгоритмов, которые не могут без цели
     auto it = free_tasks.begin();
     for (uint32_t r = 0; r < desires.size(); r++) {
         if (desires[r] == -1) {

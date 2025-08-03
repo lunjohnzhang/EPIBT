@@ -41,7 +41,7 @@ bin/main example.config
 ### Сonfiguration
 In the argument, you pass the path to the configuration file. It has the following settings:
 - `map_type` — `RANDOM`, `CITY`, `GAME`, `SORTATION`, `WAREHOUSE`.
-- `planner_type` — `PIBT`, `CAUSAL_PIBT`, `PIBT_TF` (Causal PIBT+traffic flow), `EPIBT`, `EPIBT_LNS`, `EPIBT_LNS_OLD` (LoRR24-Winner), `PEPIBT_LNS`, `WPPL` (LoRR23-Winner).
+- `planner_type` — `PIBT`, `CAUSAL_PIBT`, `PIBT_TF` (Causal PIBT+traffic flow), `EPIBT`, `EPIBT_LNS`, `PEPIBT_LNS` (parallel `EPIBT_LNS`).
 - `scheduler_type` — `CONST` (а constant sequence of tasks for each agent), `GREEDY` (stores a pool of available tasks of size 1.5*number of agents, using a greedy algorithm (can use multithreading), it gives each agent the nearest available task.).
 - `graph_guidance_type` — `ENABLE` (enables Graph Guidance Optimization)
 - `map_file` — the path to the file `map.txt` where the map is stored.

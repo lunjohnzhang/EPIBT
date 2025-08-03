@@ -17,7 +17,7 @@ for map in ["RANDOM",
 # Map: RANDOM, CITY, GAME, SORTATION, WAREHOUSE\n\
 map_type = {map}\n\
 \n\
-# Planner algorithms: PIBT, CAUSAL_PIBT, PIBT_TF, EPIBT, EPIBT_LNS, PEPIBT_LNS, WPPL\n\
+# Planner algorithms: PIBT, CAUSAL_PIBT, PIBT_TF, EPIBT, EPIBT_LNS, PEPIBT_LNS\n\
 planner_type = EPIBT\n\
 \n\
 # Scheduler types: CONST, GREEDY\n\
@@ -31,6 +31,7 @@ map_file = tests/{map.lower()}/map.txt\n\
 tasks_path = tests/{map.lower()}/tasks_one.csv\n\
 agents_path = tests/{map.lower()}/\n\
 steps_num = {steps_num}\n\
+step_time = 1000\n\
 output_path = solutions/{map.lower()}", file=file
         )
     ret = os.system("./bin/main tmp.config")

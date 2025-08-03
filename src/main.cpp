@@ -44,8 +44,7 @@ int main(int argc, char *argv[]) {
     std::ifstream(config.map_file) >> get_map();
 
 #ifndef ENABLE_ROTATE_MODEL
-    ASSERT(get_planner_type() != PlannerType::CAUSAL_PIBT && get_planner_type() != PlannerType::PIBT_TF &&
-                   get_planner_type() != PlannerType::WPPL && get_planner_type() != PlannerType::EPIBT_LNS_OLD,
+    ASSERT(get_planner_type() != PlannerType::CAUSAL_PIBT && get_planner_type() != PlannerType::PIBT_TF,
            "incomplete planner type for non rotate model");
 #endif
 
@@ -75,7 +74,7 @@ int main(int argc, char *argv[]) {
     get_graph() = Graph(get_map(), get_gg());
     get_hm() = HeuristicMatrix(get_graph());
 
-    if (get_planner_type() == PlannerType::EPIBT || get_planner_type() == PlannerType::EPIBT_LNS || get_planner_type() == PlannerType::EPIBT_LNS_OLD || get_planner_type() == PlannerType::PEPIBT_LNS) {
+    if (get_planner_type() == PlannerType::EPIBT || get_planner_type() == PlannerType::EPIBT_LNS || get_planner_type() == PlannerType::PEPIBT_LNS) {
         init_operations();
         get_omap() = OperationsMap(get_graph(), get_operations());
     }
@@ -102,9 +101,6 @@ int main(int argc, char *argv[]) {
                 }
             }
         });
-    } else if (get_planner_type() == PlannerType::WPPL) {
-        WPPL planner;
-        planner.initialize(&env);
     }
 #endif
 
@@ -186,7 +182,7 @@ int main(int argc, char *argv[]) {
                 output << "test id," << test << '\n';
                 output << "scheduler type," << scheduler_type_to_string(config.scheduler_type) << '\n';
                 output << "planner type," << planner_type_to_string(config.planner_type);
-                if (config.planner_type == PlannerType::EPIBT || config.planner_type == PlannerType::EPIBT_LNS || config.planner_type == PlannerType::EPIBT_LNS_OLD || config.planner_type == PlannerType::PEPIBT_LNS) {
+                if (config.planner_type == PlannerType::EPIBT || config.planner_type == PlannerType::EPIBT_LNS || config.planner_type == PlannerType::PEPIBT_LNS) {
                     output << "(" << EPIBT_DEPTH_VALUE << ")";
                 }
                 output << '\n';

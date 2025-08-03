@@ -19,9 +19,7 @@ enum class PlannerType : uint8_t {
     PIBT_TF,      // pibt + trafficflow
     EPIBT,        // epibt
     EPIBT_LNS,    // epibt + lns
-    EPIBT_LNS_OLD,// epibt + lns from LORR2024
     PEPIBT_LNS,   // parallel epibt + lns
-    WPPL,         // windowed parallel pibt + lns
 
     NUM
 };

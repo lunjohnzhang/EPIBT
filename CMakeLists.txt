@@ -65,15 +65,6 @@ file(GLOB SOURCES
         src/planner/causal_pibt/*.cpp
         src/planner/epibt/*.cpp
 
-        src/planner/wppl/*.cpp
-        src/planner/wppl/LaCAM2/*.cpp
-        src/planner/wppl/LaCAM2/SUO2/*.cpp
-        src/planner/wppl/LNS/*.cpp
-        src/planner/wppl/LNS/Parallel/*.cpp
-        src/planner/wppl/RHCR/interface/*.cpp
-        src/planner/wppl/RHCR/main/*.cpp
-        src/planner/wppl/util/*.cpp
-
         src/scheduler/greedy/*.cpp
         )
 
