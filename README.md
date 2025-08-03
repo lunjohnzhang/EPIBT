@@ -76,7 +76,6 @@ In the argument, you pass the path to the configuration file. It has the followi
 ### Scripts
 
 - `src/scripts/tester.py` — a script to run bin/main on all tests and write results to the appropriate directories.
-- `src/scripts/tester_winpibt.py` — a script to run `winPIBT` algorithm on all tests and write results to the appropriate directories.
 - `src/scripts/build_metrics.py` — a script for collecting information from `metrics.csv` files inside a given folder and creating a table.
 - `src/scripts/build_metrics_plot.py` — a script for visualization a tables of metrics with different algorithms.
   <img width="3668" height="1506" alt="image" src="https://github.com/user-attachments/assets/3cee76a9-d24b-4583-b628-47bb4f924233" />
