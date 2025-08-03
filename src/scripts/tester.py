@@ -31,7 +31,7 @@ map_file = tests/{map.lower()}/map.txt\n\
 tasks_path = tests/{map.lower()}/tasks_one.csv\n\
 agents_path = tests/{map.lower()}/\n\
 steps_num = {steps_num}\n\
-output_path = real_pibt/{map.lower()}", file=file
+output_path = solutions/{map.lower()}", file=file
         )
     ret = os.system("./bin/main tmp.config")
     assert ret == 0, "invalid return code: " + str(ret)

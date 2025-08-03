@@ -8,7 +8,7 @@ from PIL import Image
 from matplotlib.ticker import FixedFormatter
 from matplotlib.ticker import MaxNLocator
 
-data = pd.read_csv('total_metrics.csv', sep=',')
+data = pd.read_csv('metrics.csv', sep=',')
 
 # "map#test_id"
 best_throughput = {}

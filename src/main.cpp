@@ -41,6 +41,12 @@ int main(int argc, char *argv[]) {
 
     std::ifstream(config.map_file) >> get_map();
 
+#ifndef ENABLE_ROTATE_MODEL
+    ASSERT(get_planner_type() != PlannerType::CAUSAL_PIBT && get_planner_type() != PlannerType::PIBT_TF &&
+                   get_planner_type() != PlannerType::WPPL && get_planner_type() != PlannerType::EPIBT_LNS_OLD,
+           "incomplete planner type for non rotate model");
+#endif
+
     get_gg() = GraphGuidance(get_map().get_rows(), get_map().get_cols());
     if (config.graph_guidance_type == GraphGuidanceType::DISABLE) {
 
@@ -59,6 +65,7 @@ int main(int argc, char *argv[]) {
         } else {
             FAILED_ASSERT("unexpected map type");
         }
+        ASSERT(get_planner_type() != PlannerType::CAUSAL_PIBT && get_planner_type() != PlannerType::PIBT_TF, "Graph Guidance can't be use with Causal PIBT or Causal PIBT+traffic flow");
     } else {
         FAILED_ASSERT("unexpected graph guidance type");
     }
@@ -109,6 +116,9 @@ int main(int argc, char *argv[]) {
         if (!std::filesystem::exists(filename)) {
             break;
         }
+        visited.push_back(false);
+    }
+    if (visited.empty()) {
         visited.push_back(false);
     }
 

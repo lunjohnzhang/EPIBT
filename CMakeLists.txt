@@ -10,8 +10,8 @@ option(ENABLE_ASSERT "Enable assertions" ON)
 option(ENABLE_SCHEDULER_CHANGE_TASK "Enable scheduler task changes" ON)
 
 # Configurable compile-time values
-set(EPIBT_DEPTH "3" CACHE STRING "Depth for EPIBT operations")
 set(THREADS_NUM_DEFAULT "10" CACHE STRING "Default number of threads")
+set(EPIBT_DEPTH "3" CACHE STRING "Depth for EPIBT operations")
 
 # Apply configuration
 if (ENABLE_ROTATE_MODEL)
@@ -45,8 +45,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Find Boost
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
-#SET(Boost_USE_STATIC_LIBS ON)
-# iostreams
+# SET(Boost_USE_STATIC_LIBS ON)
+
 find_package(Boost 1.49.0 REQUIRED COMPONENTS program_options system filesystem log log_setup iostreams)
 
 include_directories(${Boost_INCLUDE_DIRS})
