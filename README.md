@@ -36,6 +36,7 @@ Creates the `bin/main` executable file.
 bin/main example.config
 ```
 
+### Сonfiguration
 In the argument, you pass the path to the configuration file. It has the following settings:
 - `map_type` — `RANDOM`, `CITY`, `GAME`, `SORTATION`, `WAREHOUSE`.
 - `planner_type` — `PIBT`, `CAUSAL_PIBT`, `PIBT_TF` (Causal PIBT+traffic flow), `EPIBT`, `EPIBT_LNS`, `EPIBT_LNS_OLD` (LoRR24-Winner), `PEPIBT_LNS`, `WPPL` (LoRR23-Winner).
@@ -69,6 +70,16 @@ In the argument, you pass the path to the configuration file. It has the followi
     |avg scheduler time (ms)|0.000979093|
     |avg planner time (ms)|0.158248|
 
+### Scripts
+
+- `src/scripts/tester.py` — a script to run bin/main on all tests and write to the appropriate directories.
+- `src/scripts/tester_winpibt.py` — a script to run `winPIBT` algorithm on all tests and write to the appropriate directories.
+- `src/scripts/build_metrics.py` — a script for collecting information from metrics.csv files inside a given folder and creating a table.
+- `src/scripts/build_metrics_plot.py` — a script for visualization a tables of metrics.
+  <img width="3668" height="1506" alt="image" src="https://github.com/user-attachments/assets/3cee76a9-d24b-4583-b628-47bb4f924233" />
+- `src/scripts/build_heatmap.py` — a script for visualizing a heat map of agents actions.
+  <img width="2103" height="1865" alt="image" src="https://github.com/user-attachments/assets/1387fd2e-92a7-42a1-a1c9-4998d9364913" />
+- and others.
 
 ## License
 
