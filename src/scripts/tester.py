@@ -18,7 +18,7 @@ for map in ["RANDOM",
 map_type = {map}\n\
 \n\
 # Planner algorithms: PIBT, CAUSAL_PIBT, PIBT_TF, EPIBT, EPIBT_LNS, PEPIBT_LNS, WPPL\n\
-planner_type = PIBT\n\
+planner_type = EPIBT\n\
 \n\
 # Scheduler types: CONST, GREEDY\n\
 scheduler_type = CONST\n\

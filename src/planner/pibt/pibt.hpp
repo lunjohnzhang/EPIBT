@@ -5,9 +5,9 @@
 #include <utils/time.hpp>
 
 #ifdef ENABLE_ROTATE_MODEL
-#define PIBT_PLAN_DEPTH 3
+constexpr uint32_t PIBT_DEPTH = 3;
 #else
-#define PIBT_PLAN_DEPTH 1
+constexpr uint32_t PIBT_DEPTH = 1;
 #endif
 
 class PIBT {
@@ -24,16 +24,16 @@ class PIBT {
     TimePoint end_time;
 
     // used_edge[edge][depth] = robot id
-    std::vector<std::array<uint32_t, PIBT_PLAN_DEPTH>> used_edge;
+    std::vector<std::array<uint32_t, PIBT_DEPTH>> used_edge;
 
     // used_pos[pos][depth] = robot id
-    std::vector<std::array<uint32_t, PIBT_PLAN_DEPTH>> used_pos;
+    std::vector<std::array<uint32_t, PIBT_DEPTH>> used_pos;
 
-    [[nodiscard]] std::array<uint32_t, PIBT_PLAN_DEPTH> get_nodes_path(uint32_t r, DirectionType desired) const;
+    [[nodiscard]] std::array<uint32_t, PIBT_DEPTH> get_nodes_path(uint32_t r, DirectionType desired) const;
 
-    [[nodiscard]] std::array<uint32_t, PIBT_PLAN_DEPTH> get_poses_path(uint32_t r, DirectionType desired) const;
+    [[nodiscard]] std::array<uint32_t, PIBT_DEPTH> get_poses_path(uint32_t r, DirectionType desired) const;
 
-    [[nodiscard]] std::array<uint32_t, PIBT_PLAN_DEPTH> get_edges_path(uint32_t r, DirectionType desired) const;
+    [[nodiscard]] std::array<uint32_t, PIBT_DEPTH> get_edges_path(uint32_t r, DirectionType desired) const;
 
     void add_path(uint32_t r);
 

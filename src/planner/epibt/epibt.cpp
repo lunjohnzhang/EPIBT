@@ -19,7 +19,7 @@ uint32_t EPIBT::get_used(uint32_t r) const {
     uint32_t answer = -1;
 
     const auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         if (used_pos[to_pos][depth] != -1) {
             if (answer == -1) {
@@ -31,7 +31,7 @@ uint32_t EPIBT::get_used(uint32_t r) const {
     }
 
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (used_edge[to_edge][depth] != -1) {
             if (answer == -1) {
@@ -55,8 +55,8 @@ int64_t EPIBT::get_smart_dist_IMPL(uint32_t r, uint32_t desired) const {
     const uint32_t target = robots[r].target;
 
     int64_t dist = get_hm().get(path.back(), target);
-    dist += EPIBT_DEPTH;
-    for (uint32_t d = 0; d < EPIBT_DEPTH; d++) {
+    dist += EPIBT_DEPTH_VALUE;
+    for (uint32_t d = 0; d < EPIBT_DEPTH_VALUE; d++) {
         if (get_graph().get_pos(path[d]).get_pos() == target) {
             dist = d;
             break;
@@ -83,7 +83,7 @@ void EPIBT::add_path(uint32_t r) {
     ASSERT(0 <= desires[r] && desires[r] < get_operations().size(), "invalid desired");
 
     const auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         ASSERT(to_pos < used_pos.size(), "invalid to_pos");
         ASSERT(used_pos[to_pos][depth] == -1, "already used");
@@ -91,7 +91,7 @@ void EPIBT::add_path(uint32_t r) {
     }
 
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (to_edge) {
             ASSERT(to_edge < used_edge.size(), "invalid to_edge");
@@ -108,14 +108,14 @@ void EPIBT::remove_path(uint32_t r) {
     ASSERT(0 <= desires[r] && desires[r] < get_operations().size(), "invalid desired");
 
     const auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         ASSERT(to_pos < used_pos.size(), "invalid to_pos");
         ASSERT(used_pos[to_pos][depth] == r, "invalid node");
         used_pos[to_pos][depth] = -1;
     }
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (to_edge) {
             ASSERT(to_edge < used_edge.size(), "invalid to_edge");
@@ -152,7 +152,7 @@ EPIBT::RetType EPIBT::build_impl(uint32_t r) {
             ASSERT(0 <= to_r && to_r < robots.size(), "invalid to_r: " + std::to_string(to_r));
 
             if (curr_visited[to_r] == visited_counter ||                                       // если мы уже построили его сейчас
-                (visited[to_r] == visited_counter && visited_num[to_r] >= EPIBT_REVISIT_NUM) ||// ограничение на количество посещений <= EPIBT_REVISIT_NUM
+                (visited[to_r] == visited_counter && visited_num[to_r] >= EPIBT_REVISIT_VALUE) ||// ограничение на количество посещений <= EPIBT_REVISIT_VALUE
                 robots[to_r].priority <= inheritance_priority                                  // не идем в агента более высокого приоритета
             ) {
                 continue;
@@ -225,8 +225,8 @@ EPIBT::EPIBT(Robots &new_robots, TimePoint end_time, const std::vector<uint32_t>
     }
 
     {
-        std::array<uint32_t, EPIBT_DEPTH> value{};
-        for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+        std::array<uint32_t, EPIBT_DEPTH_VALUE> value{};
+        for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
             value[depth] = -1;
         }
         used_pos.resize(get_map().get_size(), value);
@@ -300,48 +300,6 @@ std::vector<ActionType> EPIBT::get_actions() const {
     for (uint32_t r = 0; r < robots.size(); r++) {
         const auto &op = get_operations()[desires[r]];
         answer[r] = op[0];
-
-#ifdef ENABLE_EPIBT_SMART_OPERATION_EXECUTION
-#ifdef ENABLE_ROTATE_MODEL
-        if (robots[r].is_disable()) {
-            continue;
-        }
-        // перебирает набор действий и выбирает лучшее по расстоянию до цели
-        auto update_answer = [&](const std::vector<ActionType> &actions) {
-            ASSERT(!actions.empty(), "is empty");
-            std::vector<uint32_t> dists;
-            for (auto action: actions) {
-                dists.push_back(get_hm().get(get_graph().get_to_node(robots[r].node, static_cast<uint32_t>(action)), robots[r].target));
-            }
-            uint32_t best_i = 0;
-            for (uint32_t i = 0; i < actions.size(); i++) {
-                if (dists[i] < dists[best_i]) {
-                    best_i = i;
-                }
-            }
-            answer[r] = actions[best_i];
-        };
-
-        // не меняя траекторию мы попробуем другие повороты или ожидание
-        if (op[0] == ActionType::ROTATE || op[0] == ActionType::COUNTER_ROTATE) {
-            if (op[0] == op[1]) {
-                if (op[2] == ActionType::WAIT) {
-                    // CCW, RRW
-                    update_answer({ActionType::WAIT, ActionType::ROTATE, ActionType::COUNTER_ROTATE});
-                } else {
-                    // CC, RR
-                    update_answer({ActionType::ROTATE, ActionType::COUNTER_ROTATE});
-                }
-            } else if (op[1] == ActionType::WAIT) {
-                // CW, RW
-                update_answer({ActionType::WAIT, op[0]});
-            }
-        } else if (desires[r] == 0) {
-            // WWW
-            update_answer({ActionType::WAIT, ActionType::ROTATE, ActionType::COUNTER_ROTATE});
-        }
-#endif
-#endif
     }
     return answer;
 }

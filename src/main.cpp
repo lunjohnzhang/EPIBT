@@ -26,9 +26,10 @@
 #include <numeric>
 
 int main(int argc, char *argv[]) {
+    Timer main_timer;
     RuntimeConfig config;
 
-    std::cout << "Threads_num: " << THREADS_NUM << std::endl;
+    std::cout << "Threads num: " << THREADS_NUM_VALUE << std::endl;
 
     if (argc >= 2) {
         std::string config_file = argv[1];
@@ -91,8 +92,8 @@ int main(int argc, char *argv[]) {
     }
     if (get_planner_type() == PlannerType::PIBT_TF || get_planner_type() == PlannerType::CAUSAL_PIBT) {
         CausalPlanner::init_heuristics(&env);
-        launch_threads(THREADS_NUM, [&](uint32_t thr) {
-            for (uint32_t dst = thr; dst + 1 < get_map().get_size(); dst += THREADS_NUM) {
+        launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
+            for (uint32_t dst = thr; dst + 1 < get_map().get_size(); dst += THREADS_NUM_VALUE) {
                 for (uint32_t src = 0; src + 1 < get_map().get_size(); src++) {
                     if (get_map().is_free(src + 1) && get_map().is_free(dst + 1)) {
                         CausalPlanner::get_h(&env, src, dst);
@@ -122,7 +123,9 @@ int main(int argc, char *argv[]) {
         visited.push_back(false);
     }
 
-    launch_threads(THREADS_NUM, [&](uint32_t thr) {
+    std::cout << "The preparation is over: " << main_timer << std::endl;
+
+    launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
         for (uint32_t test = 0; test < visited.size(); test++) {
             {
                 std::unique_lock locker(mutex);
@@ -130,6 +133,7 @@ int main(int argc, char *argv[]) {
                     continue;
                 }
                 visited[test] = true;
+                std::cout << "Start test " << test << ", thr: " << thr << std::endl;
             }
 
             Timer timer;
@@ -205,11 +209,12 @@ int main(int argc, char *argv[]) {
                 {
                     std::unique_lock locker(mutex);
                     // answer.write_agent();
-                    std::cout << "Done test " << test << ' ' << timer << std::endl;
+                    std::cout << "Done  test " << test << ", thr: " << thr << ", time: " << timer << std::endl;
                 }
             }
         }
     });
 
     std::cout << "===Done===" << std::endl;
+    std::cout << "Total time: " << main_timer << std::endl;
 }

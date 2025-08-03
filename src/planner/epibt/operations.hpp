@@ -7,14 +7,6 @@
 #include <iostream>
 #include <vector>
 
-// Use CMake-defined EPIBT_DEPTH, with fallback default
-#ifndef EPIBT_DEPTH
-#define EPIBT_DEPTH 3
-#endif
-
-// Convert macro to constexpr
-constexpr uint32_t EPIBT_DEPTH_VALUE = EPIBT_DEPTH;
-
 using Operation = std::array<ActionType, EPIBT_DEPTH_VALUE>;
 
 using Path = std::array<uint32_t, EPIBT_DEPTH_VALUE>;

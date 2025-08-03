@@ -94,8 +94,8 @@ void HeuristicMatrix::build(uint32_t source, const Graph &graph) {
 HeuristicMatrix::HeuristicMatrix(const Graph &graph) {
     matrix.resize(get_map().get_size());
 
-    launch_threads(THREADS_NUM, [&](uint32_t thr) {
-        for (uint32_t pos = thr + 1; pos < matrix.size(); pos += THREADS_NUM) {
+    launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
+        for (uint32_t pos = thr + 1; pos < matrix.size(); pos += THREADS_NUM_VALUE) {
             if (Position(pos
 #ifdef ENABLE_ROTATE_MODEL
                     ,0

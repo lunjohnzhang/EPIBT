@@ -5,13 +5,14 @@ project(omapfs)
 set(CMAKE_CXX_STANDARD 20)
 
 # Compile-time configuration options
-option(ENABLE_ROTATE_MODEL "Enable rotation model instead of directional model" ON)
 option(ENABLE_ASSERT "Enable assertions" ON)
-option(ENABLE_SCHEDULER_CHANGE_TASK "Enable scheduler task changes" ON)
+option(ENABLE_ROTATE_MODEL "Enable rotation model instead of directional model" ON)
+option(ENABLE_EPIBT_IO "Enable inheritance of operations in the EPIBT-like algorithms" ON)
 
 # Configurable compile-time values
-set(THREADS_NUM_DEFAULT "10" CACHE STRING "Default number of threads")
-set(EPIBT_DEPTH "3" CACHE STRING "Depth for EPIBT operations")
+set(THREADS_NUM "10" CACHE STRING "Allowed number of threads")
+set(EPIBT_DEPTH "3" CACHE STRING "Depth for operations in the EPIBT-like algorithms")
+set(EPIBT_REVISIT "10" CACHE STRING "The allowed number of visits for each agent in the EPIBT-like algorithms")
 
 # Apply configuration
 if (ENABLE_ROTATE_MODEL)
@@ -23,18 +24,22 @@ endif ()
 
 if (ENABLE_ASSERT)
     add_definitions(-DENABLE_ASSERT)
+    message(STATUS "Enable assertions")
 endif ()
 
-if (ENABLE_SCHEDULER_CHANGE_TASK)
-    add_definitions(-DENABLE_SCHEDULER_CHANGE_TASK)
-endif ()
+if (ENABLE_EPIBT_IO)
+    add_definitions(-DENABLE_EPIBT_IO)
+    message(STATUS "Enable EPIBT inheritance of operations")
+endif()
 
 # Set compile-time constants
+add_definitions(-DTHREADS_NUM=${THREADS_NUM})
 add_definitions(-DEPIBT_DEPTH=${EPIBT_DEPTH})
-add_definitions(-DTHREADS_NUM_DEFAULT=${THREADS_NUM_DEFAULT})
+add_definitions(-DEPIBT_REVISIT=${EPIBT_REVISIT})
 
+message(STATUS "THREADS_NUM set to: ${THREADS_NUM}")
 message(STATUS "EPIBT_DEPTH set to: ${EPIBT_DEPTH}")
-message(STATUS "Default threads: ${THREADS_NUM_DEFAULT}")
+message(STATUS "EPIBT_REVISIT set to: ${EPIBT_REVISIT}")
 
 find_package(OpenMP REQUIRED)
 find_package(Threads REQUIRED)

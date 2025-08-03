@@ -27,14 +27,14 @@ bool EPIBT_LNS_OLD::is_free_path(uint32_t r) const {
     ASSERT(validate_path(r, desires[r]), "invalid path");
 
     const auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         if (used_pos[poses_path[depth]][depth] != -1) {
             ASSERT(used_pos[poses_path[depth]][depth] != r, "invalid used_node");
             return false;
         }
     }
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         if (used_edge[edges_path[depth]][depth] != -1) {
             ASSERT(used_edge[edges_path[depth]][depth] != r, "invalid used_edge");
             return false;
@@ -54,7 +54,7 @@ uint32_t EPIBT_LNS_OLD::get_used(uint32_t r) const {
     uint32_t answer = -1;
 
     auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         if (used_pos[to_pos][depth] != -1) {
             if (answer == -1) {
@@ -66,7 +66,7 @@ uint32_t EPIBT_LNS_OLD::get_used(uint32_t r) const {
     }
 
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (used_edge[to_edge][depth] != -1) {
             if (answer == -1) {
@@ -89,7 +89,7 @@ std::vector<uint32_t> EPIBT_LNS_OLD::get_multi_used(uint32_t r) const {
     };
 
     auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         if (used_pos[to_pos][depth] != -1) {
             add(used_pos[to_pos][depth]);
@@ -97,7 +97,7 @@ std::vector<uint32_t> EPIBT_LNS_OLD::get_multi_used(uint32_t r) const {
     }
 
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (used_edge[to_edge][depth] != -1) {
             add(used_edge[to_edge][depth]);
@@ -157,7 +157,7 @@ int64_t EPIBT_LNS_OLD::get_smart_dist_IMPL(uint32_t r, uint32_t desired) const {
     }
 
     // [KEK]: если мы проходим по таргету, то мы должны это делать как можно раньше. 7200 -> 7297
-    for (uint32_t d = 0; d < EPIBT_DEPTH; d++) {
+    for (uint32_t d = 0; d < EPIBT_DEPTH_VALUE; d++) {
         if (get_graph().get_pos(path[d]).get_pos() == target) {
             dist = d;
             dist = -dist;
@@ -182,7 +182,7 @@ void EPIBT_LNS_OLD::add_path(uint32_t r) {
     ASSERT(0 <= desires[r] && desires[r] < get_operations().size(), "invalid desired");
 
     const auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         ASSERT(to_pos < used_pos.size(), "invalid to_pos");
         ASSERT(used_pos[to_pos][depth] == -1, "already used");
@@ -190,7 +190,7 @@ void EPIBT_LNS_OLD::add_path(uint32_t r) {
     }
 
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (to_edge) {
             ASSERT(to_edge < used_edge.size(), "invalid to_edge");
@@ -207,14 +207,14 @@ void EPIBT_LNS_OLD::remove_path(uint32_t r) {
     ASSERT(0 <= desires[r] && desires[r] < get_operations().size(), "invalid desired");
 
     const auto &poses_path = get_omap().get_poses_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_pos = poses_path[depth];
         ASSERT(to_pos < used_pos.size(), "invalid to_pos");
         ASSERT(used_pos[to_pos][depth] == r, "invalid node");
         used_pos[to_pos][depth] = -1;
     }
     const auto &edges_path = get_omap().get_edges_path(robots[r].node, desires[r]);
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         uint32_t to_edge = edges_path[depth];
         if (to_edge) {
             ASSERT(to_edge < used_edge.size(), "invalid to_edge");
@@ -643,8 +643,8 @@ EPIBT_LNS_OLD::EPIBT_LNS_OLD(Robots &robots, TimePoint end_time)
     best_desires.resize(robots.size());
 
     {
-        std::array<uint32_t, EPIBT_DEPTH> value{};
-        for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+        std::array<uint32_t, EPIBT_DEPTH_VALUE> value{};
+        for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
             value[depth] = -1;
         }
         used_pos.resize(get_map().get_size(), value);
@@ -714,9 +714,9 @@ EPIBT_LNS_OLD::EPIBT_LNS_OLD(Robots &robots, TimePoint end_time)
                 steps.emplace_back(priority, desired);
             }
             std::sort(steps.begin(), steps.end());
-            robot_desires[r].resize(EPIBT_DEPTH + 1);
+            robot_desires[r].resize(EPIBT_DEPTH_VALUE + 1);
             for (auto [priority, desired]: steps) {
-                for (uint32_t d = std::max(static_cast<uint32_t>(3), get_operation_depth(desired)); d <= EPIBT_DEPTH; d++) {
+                for (uint32_t d = std::max(static_cast<uint32_t>(3), get_operation_depth(desired)); d <= EPIBT_DEPTH_VALUE; d++) {
                     robot_desires[r][d].push_back(desired);
                 }
             }
@@ -727,7 +727,7 @@ EPIBT_LNS_OLD::EPIBT_LNS_OLD(Robots &robots, TimePoint end_time)
 void EPIBT_LNS_OLD::solve(uint64_t seed) {
     rnd = Randomizer(seed);
 
-    current_depth = EPIBT_DEPTH;
+    current_depth = EPIBT_DEPTH_VALUE;
 
     temp = 0;
     for (uint32_t r: order) {

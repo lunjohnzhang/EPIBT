@@ -10,7 +10,7 @@ std::tuple<Path, Path, Path> get_paths(uint32_t node, const Operation &operation
     Path edges_path{};
     Path poses_path{};
 
-    for (uint32_t depth = 0; depth < EPIBT_DEPTH; depth++) {
+    for (uint32_t depth = 0; depth < EPIBT_DEPTH_VALUE; depth++) {
         auto action = operation[depth];
         uint32_t to_node = get_graph().get_to_node(node, static_cast<uint32_t>(action));
         uint32_t to_edge = get_graph().get_to_edge(node, static_cast<uint32_t>(action));

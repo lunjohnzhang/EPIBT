@@ -9,22 +9,10 @@
 // -DEPIBT_DEPTH=<value>
 // -DTHREADS_NUM_DEFAULT=<value>
 
-// Use the CMake-defined value, or fallback
-constexpr uint32_t THREADS_NUM = THREADS_NUM_DEFAULT;
+// Convert macro to constexpr
 
-/* TODO
- * 1) улучшить проверки в Answer
- */
+constexpr uint32_t THREADS_NUM_VALUE = THREADS_NUM;
 
-constexpr uint32_t EPIBT_REVISIT_NUM = 10;
+constexpr uint32_t EPIBT_DEPTH_VALUE = EPIBT_DEPTH;
 
-// TODO: remove get_operation_weight
-
-// #define ENABLE_EPIBT_SMART_OPERATION_EXECUTION
-
-// #define ENABLE_WRITE_SCHEDULE
-
-// выключить наследование операций EPIBT
-#define ENABLE_EPIBT_INHERITANCE
-
-// #define ENABLE_PIBT_REVISIT
+constexpr uint32_t EPIBT_REVISIT_VALUE = EPIBT_REVISIT;

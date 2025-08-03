@@ -15,10 +15,10 @@ class EPIBT_LNS_OLD {
     TimePoint end_time;
 
     // used_edge[edge][depth] = robot id
-    std::vector<std::array<uint32_t, EPIBT_DEPTH>> used_edge;
+    std::vector<std::array<uint32_t, EPIBT_DEPTH_VALUE>> used_edge;
 
     // used_pos[pos][depth] = robot id
-    std::vector<std::array<uint32_t, EPIBT_DEPTH>> used_pos;
+    std::vector<std::array<uint32_t, EPIBT_DEPTH_VALUE>> used_pos;
 
     // desires[r] = запланированное действие робота
     std::vector<uint32_t> desires;

@@ -24,19 +24,22 @@ void GreedyScheduler::rebuild_dp(uint32_t r) {
 }
 
 void GreedyScheduler::rebuild_dp(TimePoint end_time) {
-    Timer timer;
     std::vector<uint32_t> order = free_robots;
     std::stable_sort(order.begin(), order.end(), [&](uint32_t lhs, uint32_t rhs) {
         return timestep_updated[lhs] < timestep_updated[rhs];
     });
 
     std::atomic<uint32_t> counter{};
-    launch_threads(THREADS_NUM, [&](uint32_t thr) {
-        for (uint32_t i = thr; i < order.size() && get_now() < end_time; i += THREADS_NUM) {
+    for (uint32_t i = 0; i < order.size() && get_now() < end_time; i++) {
+        rebuild_dp(order[i]);
+        ++counter;
+    }
+    /*launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
+        for (uint32_t i = thr; i < order.size() && get_now() < end_time; i += THREADS_NUM_VALUE) {
             rebuild_dp(order[i]);
             ++counter;
         }
-    });
+    });*/
 }
 
 uint64_t GreedyScheduler::get_dist(uint32_t r, uint32_t t) const {
@@ -101,17 +104,13 @@ void GreedyScheduler::update(uint32_t timestep) {
     for (auto &[t, task]: task_pool) {
         if (
                 task.agent_assigned == -1// нет агента
-#ifdef ENABLE_SCHEDULER_CHANGE_TASK
-                || !task.is_taken// мы можем поменять задачу
-#endif
+                || !task.is_taken        // мы можем поменять задачу
         ) {
-#ifdef ENABLE_SCHEDULER_CHANGE_TASK
             if (task.agent_assigned != -1) {
                 robots[task.agent_assigned].task_id = -1;
                 robots[task.agent_assigned].target = 0;
                 task.agent_assigned = -1;
             }
-#endif
             free_tasks.push_back(t);
         }
     }
@@ -126,13 +125,8 @@ void GreedyScheduler::update(uint32_t timestep) {
             desires[r] = t;
             continue;
         }
-        if (
-                // нет задачи
-                !task_pool.contains(t)
-#ifdef ENABLE_SCHEDULER_CHANGE_TASK
-                || !task_pool.at(t).is_taken
-#endif
-        ) {
+        // нет задачи
+        if (!task_pool.contains(t) || !task_pool.at(t).is_taken) {
             free_robots.push_back(r);
         }
     }

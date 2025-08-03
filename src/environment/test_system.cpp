@@ -129,7 +129,7 @@ std::vector<ActionType> TestSystem::get_actions() {
     constexpr uint32_t PLANNER_TIME_LIMIT = 1000;
     TimePoint end_time = get_now() + Milliseconds(PLANNER_TIME_LIMIT);
 
-#ifndef ENABLE_EPIBT_INHERITANCE
+#ifndef ENABLE_EPIBT_IO
     std::vector<uint32_t> epibt_prev_operations(robots.size());
 #endif
 
@@ -261,13 +261,12 @@ Answer TestSystem::simulate(uint32_t steps_num) {
         for (uint32_t r = 0; r < robots.size(); r++) {
             answer.robots[r].assigned_task.push_back(schedule[r]);
         }
-#ifdef ENABLE_WRITE_SCHEDULE
+
         answer.tasks.emplace_back();
         for (auto &[id, task]: task_pool) {
             answer.tasks[timestep][id] = task;
         }
         answer.validate_schedule(timestep);
-#endif
 
         // set new schedule
         for (uint32_t r = 0; r < robots.size(); r++) {
@@ -313,6 +312,8 @@ Answer TestSystem::simulate(uint32_t steps_num) {
         answer.step_time.push_back(step_timer.get());
         answer.finished_tasks_in_step.push_back(finished_tasks.size());
         finished_tasks.clear();
+
+        answer.tasks.back().clear(); // save memory
     }
 
     answer.actions_num.push_back({});

@@ -5,8 +5,8 @@
 
 #include <numeric>
 
-std::vector<std::array<uint32_t, PIBT_PLAN_DEPTH>> get_paths(Robot robot, DirectionType desired) {
-    std::array<uint32_t, PIBT_PLAN_DEPTH> nodes_path{}, poses_path{}, edges_path{};
+std::vector<std::array<uint32_t, PIBT_DEPTH>> get_paths(Robot robot, DirectionType desired) {
+    std::array<uint32_t, PIBT_DEPTH> nodes_path{}, poses_path{}, edges_path{};
 #ifdef ENABLE_ROTATE_MODEL
     uint32_t i = 0;
     if (desired != DirectionType::NONE) {
@@ -58,15 +58,15 @@ std::vector<std::array<uint32_t, PIBT_PLAN_DEPTH>> get_paths(Robot robot, Direct
     return {nodes_path, poses_path, edges_path};
 }
 
-std::array<uint32_t, PIBT_PLAN_DEPTH> PIBT::get_nodes_path(uint32_t r, DirectionType desired) const {
+std::array<uint32_t, PIBT_DEPTH> PIBT::get_nodes_path(uint32_t r, DirectionType desired) const {
     return get_paths(robots[r], desired)[0];
 }
 
-std::array<uint32_t, PIBT_PLAN_DEPTH> PIBT::get_poses_path(uint32_t r, DirectionType desired) const {
+std::array<uint32_t, PIBT_DEPTH> PIBT::get_poses_path(uint32_t r, DirectionType desired) const {
     return get_paths(robots[r], desired)[1];
 }
 
-std::array<uint32_t, PIBT_PLAN_DEPTH> PIBT::get_edges_path(uint32_t r, DirectionType desired) const {
+std::array<uint32_t, PIBT_DEPTH> PIBT::get_edges_path(uint32_t r, DirectionType desired) const {
     return get_paths(robots[r], desired)[2];
 }
 
@@ -152,7 +152,7 @@ PIBT::RetType PIBT::build(uint32_t r, uint32_t priority) {
     DirectionType old_desired = desires[r];
 
     std::vector<DirectionType> robot_desires;
-    for (DirectionType dir: {DirectionType::EAST, DirectionType::SOUTH, DirectionType::WEST, DirectionType::NORTH , DirectionType::NONE}) {
+    for (DirectionType dir: {DirectionType::EAST, DirectionType::SOUTH, DirectionType::WEST, DirectionType::NORTH, DirectionType::NONE}) {
         if (get_nodes_path(r, dir).back()) {
             robot_desires.push_back(dir);
         }
@@ -171,14 +171,7 @@ PIBT::RetType PIBT::build(uint32_t r, uint32_t priority) {
         } else if (to_r != -2) {
             ASSERT(0 <= to_r && to_r < robots.size(), "invalid to_r: " + std::to_string(to_r));
 
-            if (curr_visited[to_r] ||
-                robots[to_r].priority <= priority
-#ifdef ENABLE_PIBT_REVISIT
-                || visited[to_r] >= 10
-#else
-                || visited[to_r] > 0
-#endif
-            ) {
+            if (curr_visited[to_r] || robots[to_r].priority <= priority || visited[to_r] > 0) {
                 continue;
             }
 
@@ -216,7 +209,7 @@ PIBT::PIBT(Robots &robots, TimePoint end_time) : robots(robots), end_time(end_ti
     }
 
     {
-        std::array<uint32_t, PIBT_PLAN_DEPTH> value{};
+        std::array<uint32_t, PIBT_DEPTH> value{};
         for (uint32_t depth = 0; depth < value.size(); depth++) {
             value[depth] = -1;
         }
@@ -234,13 +227,7 @@ void PIBT::solve() {
         if (get_now() >= end_time) {
             break;
         }
-        if (visited[r] <
-#ifdef ENABLE_PIBT_REVISIT
-            10
-#else
-            1
-#endif
-        ) {
+        if (visited[r] == 0) {
             remove_path(r);
             if (build(r, robots[r].priority) != RetType::ACCEPTED) {
                 add_path(r);

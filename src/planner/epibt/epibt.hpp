@@ -42,10 +42,10 @@ protected:
     std::vector<std::vector<uint32_t>> robot_desires;
 
     // used_edge[edge][depth] = robot id
-    std::vector<std::array<uint32_t, EPIBT_DEPTH>> used_edge;
+    std::vector<std::array<uint32_t, EPIBT_DEPTH_VALUE>> used_edge;
 
     // used_pos[pos][depth] = robot id
-    std::vector<std::array<uint32_t, EPIBT_DEPTH>> used_pos;
+    std::vector<std::array<uint32_t, EPIBT_DEPTH_VALUE>> used_pos;
 
     [[nodiscard]] bool validate_path(uint32_t r, uint32_t desired) const;
 

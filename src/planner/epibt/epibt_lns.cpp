@@ -36,7 +36,7 @@ EPIBT_LNS::RetType EPIBT_LNS::try_build(uint32_t r, uint32_t &counter) {
             ASSERT(0 <= to_r && to_r < robots.size(), "invalid to_r");
 
             if (curr_visited[to_r] == visited_counter ||                                    // если мы уже построили его сейчас
-                (visited[to_r] == visited_counter && visited_num[to_r] >= EPIBT_REVISIT_NUM)// ограничение на количество посещений <= 10
+                (visited[to_r] == visited_counter && visited_num[to_r] >= EPIBT_REVISIT_VALUE)// ограничение на количество посещений <= EPIBT_REVISIT_VALUE
             ) {
                 continue;
             }
@@ -78,9 +78,8 @@ EPIBT_LNS::EPIBT_LNS(Robots &robots, TimePoint end_time, const std::vector<uint3
 }
 
 void EPIBT_LNS::solve(uint64_t seed) {
-    EPIBT::solve();
-
     rnd = Randomizer(seed);
+    EPIBT::solve();
 
     auto call_epibt = [&]() {
         visited_counter++;
