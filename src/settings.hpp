@@ -16,11 +16,11 @@
 #endif
 
 #ifndef ENABLE_ASSERT
-#define ENABLE_ASSERT// Default: enabled
+// #define ENABLE_ASSERT// Default: enabled
 #endif
 
 #ifndef ENABLE_SCHEDULER_CHANGE_TASK
-#define ENABLE_SCHEDULER_CHANGE_TASK// Default: enabled
+// #define ENABLE_SCHEDULER_CHANGE_TASK// Default: enabled
 #endif
 
 #ifndef THREADS_NUM_DEFAULT
@@ -42,8 +42,6 @@ constexpr uint32_t THREADS_NUM = THREADS_NUM_DEFAULT;
 
 // выключить наследование операций EPIBT
 #define ENABLE_EPIBT_INHERITANCE
-// TODO: выключить наследование операций EPIBT
-// оно показывает хуже результаты
 
 // #define ENABLE_PIBT_REVISIT
 
