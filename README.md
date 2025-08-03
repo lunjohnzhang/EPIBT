@@ -48,7 +48,27 @@ In the argument, you pass the path to the configuration file. It has the followi
 - `output_path` — where to record the logs of the solution. For each test instance with the test_id number, it will create a `test_id/` folder. He will write the files there.
   - `heatmap_*.csv`, where * is all, F, C, R, w (for rotation action model), otherwise all, E, S, W, N, w. Each such file contains a table where the cell indicates the number of events when such an action occurred or -1 if it is an impassable cell of the map. With this, you can see where agents often move, where wait a lot, and even visualize it.
   - `log.csv` — contains information about each step.
-  - `metrics.csv` — contains total information about instance. 
+  - `metrics.csv` — contains total information about instance.
+    |metric|value|
+    |-|-|
+    |task type|LMAPF-T|
+    |map type|RANDOM|
+    |test id|0|
+    |scheduler type|CONST|
+    |planner type|EPIBT(3)|
+    |graph guidance type|disable|
+    |agents num|100|
+    |steps num|1000|
+    |finished tasks|2788|
+    |throughput|2.788|
+    |F|71.686|
+    |R|14.751|
+    |C|10.386|
+    |w|3.177|
+    |avg step time (ms)|0.188965|
+    |avg scheduler time (ms)|0.000979093|
+    |avg planner time (ms)|0.158248|
+
 
 ## License
 
