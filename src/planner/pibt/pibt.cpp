@@ -152,15 +152,15 @@ PIBT::RetType PIBT::build(uint32_t r, uint32_t priority) {
     DirectionType old_desired = desires[r];
 
     std::vector<DirectionType> robot_desires;
-    for (DirectionType dir: {DirectionType::EAST, DirectionType::SOUTH, DirectionType::WEST, DirectionType::NORTH, DirectionType::NONE}) {
+    for (DirectionType dir: {DirectionType::EAST, DirectionType::SOUTH, DirectionType::WEST, DirectionType::NORTH, /*DirectionType::NONE*/}) {
         if (get_nodes_path(r, dir).back()) {
             robot_desires.push_back(dir);
         }
     }
-
     std::sort(robot_desires.begin(), robot_desires.end(), [&](DirectionType lhs, DirectionType rhs) {
         return get_hm().get(get_nodes_path(r, lhs).back(), robots[r].target) < get_hm().get(get_nodes_path(r, rhs).back(), robots[r].target);
     });
+    robot_desires.push_back(DirectionType::NONE);
 
     for (DirectionType desired: robot_desires) {
         desires[r] = desired;

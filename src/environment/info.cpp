@@ -108,3 +108,8 @@ GraphGuidanceType &get_graph_guidance_type() {
     static GraphGuidanceType type = GraphGuidanceType::DISABLE;
     return type;
 }
+
+uint32_t &get_step_time() {
+    static uint32_t step_time = 0;
+    return step_time;
+}

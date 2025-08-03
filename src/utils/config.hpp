@@ -18,6 +18,7 @@ struct RuntimeConfig {
     std::string agents_path = "tests/random/agents_0.csv";
     std::string output_path = "solutions";
     uint32_t steps_num = 1000;
+    uint32_t step_time = 1000;
 };
 
 RuntimeConfig load_config(const std::string &config_file = "config.json");

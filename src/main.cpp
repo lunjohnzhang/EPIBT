@@ -36,7 +36,8 @@ int main(int argc, char *argv[]) {
         std::cout << "Loading config file: " << config_file << std::endl;
         config = load_config(config_file);
     } else {
-        std::cout << "No config file specified, using default values" << std::endl;
+        std::cout << "No config file specified" << std::endl;
+        return 0;
     }
     apply_runtime_config(config);
 
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
         } else {
             FAILED_ASSERT("unexpected map type");
         }
-        ASSERT(get_planner_type() != PlannerType::CAUSAL_PIBT && get_planner_type() != PlannerType::PIBT_TF, "Graph Guidance can't be use with Causal PIBT or Causal PIBT+traffic flow");
+        ASSERT(get_planner_type() != PlannerType::CAUSAL_PIBT && get_planner_type() != PlannerType::PIBT_TF, "Graph Guidance can't be used with Causal PIBT or Causal PIBT+traffic flow");
     } else {
         FAILED_ASSERT("unexpected graph guidance type");
     }

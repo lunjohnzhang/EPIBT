@@ -126,7 +126,7 @@ std::vector<uint32_t> TestSystem::get_schedule() {
 
 std::vector<ActionType> TestSystem::get_actions() {
     std::vector<ActionType> actions;
-    constexpr uint32_t PLANNER_TIME_LIMIT = 1000;
+    uint32_t PLANNER_TIME_LIMIT = get_step_time();
     TimePoint end_time = get_now() + Milliseconds(PLANNER_TIME_LIMIT);
 
 #ifndef ENABLE_EPIBT_IO
@@ -313,7 +313,7 @@ Answer TestSystem::simulate(uint32_t steps_num) {
         answer.finished_tasks_in_step.push_back(finished_tasks.size());
         finished_tasks.clear();
 
-        answer.tasks.back().clear(); // save memory
+        answer.tasks.back().clear();// save memory
     }
 
     answer.actions_num.push_back({});

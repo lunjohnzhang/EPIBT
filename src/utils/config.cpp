@@ -85,6 +85,9 @@ RuntimeConfig load_config(const std::string &config_file) {
     if (parsed.count("steps_num")) {
         config.steps_num = std::stoi(parsed["steps_num"]);
     }
+    if (parsed.count("step_time")) {
+        config.step_time = std::stoi(parsed["step_time"]);
+    }
 
     std::cout << "Successfully loaded config from '" << config_file << "'" << std::endl;
     return config;
@@ -115,6 +118,7 @@ void apply_runtime_config(const RuntimeConfig &config) {
     get_planner_type() = config.planner_type;
     get_scheduler_type() = config.scheduler_type;
     get_graph_guidance_type() = config.graph_guidance_type;
+    get_step_time() = config.step_time;
 
     std::cout << "Applied runtime config:" << std::endl;
     std::cout << "  Task: ";
@@ -131,5 +135,7 @@ void apply_runtime_config(const RuntimeConfig &config) {
     std::cout << "  Tasks path: " << config.tasks_path << '\n';
     std::cout << "  Agents path: " << config.agents_path << '\n';
     std::cout << "  Output path: " << config.output_path << '\n';
+    std::cout << "  Steps num: " << config.steps_num << '\n';
+    std::cout << "  Step time: " << config.step_time << '\n';
     std::cout.flush();
 }
