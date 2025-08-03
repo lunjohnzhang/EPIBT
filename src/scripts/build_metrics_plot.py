@@ -55,6 +55,17 @@ PRINT_TIME = True
 'WPPL+GG',
 '''
 
+'''
+'EPIBT(3)+Revisit(1)',
+'EPIBT(3)+Revisit(2)',
+'EPIBT(3)+Revisit(4)',
+'EPIBT(3)+Revisit(8)',
+'EPIBT(3)+Revisit(10)',
+'EPIBT(3)+Revisit(16)',
+'EPIBT(3)+Revisit(25)',
+'EPIBT(3)+Revisit(50)',
+'''
+
 PLANNERS = [
     'PIBT',
     'winPIBT',
@@ -74,7 +85,7 @@ markers = ['o', 'v', 's', 'p', '*', 'x', 'D', 'P']
 
 data = pd.read_csv('metrics.csv', sep=',')
 
-maps = {'RANDOM', 'CITY'}#set(data.groupby('map type').groups)
+maps = set(data.groupby('map type').groups)
 print("maps:", maps)
 
 is_first = True
@@ -163,7 +174,7 @@ if __name__ == '__main__':
     row_len = 1
     if PRINT_TIME:
         row_len = 2
-    fig, axes = plt.subplots(row_len, len(maps), figsize=(8, 3 * row_len))
+    fig, axes = plt.subplots(row_len, len(maps), figsize=(16, 3 * row_len))
 
     add_map('RANDOM', 'random-32-32-20', 0)  # \nSize: 32x32\n|V|=819
     add_map('CITY', 'Paris-1-256', 1)  # \nSize: 256x256\n|V|=47240
@@ -185,7 +196,7 @@ if __name__ == '__main__':
         else:
             break
     # print(labels)
-    fig.legend(lines, labels, loc='lower center', ncol=10, borderaxespad=0.2)
+    fig.legend(lines, labels, loc='lower center', ncol=6, borderaxespad=0.2)
     #plt.tight_layout()
     plt.savefig("metrics_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.35)
     # plt.show()

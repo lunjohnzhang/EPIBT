@@ -48,7 +48,7 @@ In the argument, you pass the path to the configuration file. It has the followi
 - `tasks_path` — the path to the tasks file.
 - `agents_path` — the path to the agent file/folder. If it's going to be a folder, then it will read the `agents_*.csv` files and in this case, `THREADS_NUM_DEFAULT` threads will solve instances with different numbers of agents in parallel.
 - `steps_num` — number of steps.
-- `steps_time` — time limit in ms for the path planner. It may exceed this value, but not much.
+- `step_time` — time limit in ms for the path planner. It may exceed this value, but not much.
 - `output_path` — where to record the logs of the solution. For each test instance with the test_id number, it will create a `test_id/` folder. He will write the files there.
   - `heatmap_*.csv`, where * is all, F, C, R, w (for rotation action model), otherwise all, E, S, W, N, w. Each such file contains a table where the cell indicates the number of events when such an action occurred or -1 if it is an impassable cell of the map. With this, you can see where agents often move, where wait a lot, and even visualize it.
   - `log.csv` — contains information about each step.
