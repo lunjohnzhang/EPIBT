@@ -44,7 +44,7 @@ In the argument, you pass the path to the configuration file. It has the followi
 - `graph_guidance_type` — `ENABLE` (enables Graph Guidance Optimization)
 - `map_file` — the path to the file `map.txt` where the map is stored.
 - `tasks_path` — the path to the tasks file.
-- `agents_path` — the path to the agent file/folder. If it's going to be a folder, then it will read the `agents_*.csv` files and in this case, THREADS_NUM_DEFAULT threads will solve instances with different numbers of agents in parallel.
+- `agents_path` — the path to the agent file/folder. If it's going to be a folder, then it will read the `agents_*.csv` files and in this case, `THREADS_NUM_DEFAULT` threads will solve instances with different numbers of agents in parallel.
 - `steps_num` — number of steps.
 - `output_path` — where to record the logs of the solution. For each test instance with the test_id number, it will create a `test_id/` folder. He will write the files there.
   - `heatmap_*.csv`, where * is all, F, C, R, w (for rotation action model), otherwise all, E, S, W, N, w. Each such file contains a table where the cell indicates the number of events when such an action occurred or -1 if it is an impassable cell of the map. With this, you can see where agents often move, where wait a lot, and even visualize it.
@@ -72,14 +72,15 @@ In the argument, you pass the path to the configuration file. It has the followi
 
 ### Scripts
 
-- `src/scripts/tester.py` — a script to run bin/main on all tests and write to the appropriate directories.
-- `src/scripts/tester_winpibt.py` — a script to run `winPIBT` algorithm on all tests and write to the appropriate directories.
-- `src/scripts/build_metrics.py` — a script for collecting information from metrics.csv files inside a given folder and creating a table.
-- `src/scripts/build_metrics_plot.py` — a script for visualization a tables of metrics.
+- `src/scripts/tester.py` — a script to run bin/main on all tests and write results to the appropriate directories.
+- `src/scripts/tester_winpibt.py` — a script to run `winPIBT` algorithm on all tests and write results to the appropriate directories.
+- `src/scripts/build_metrics.py` — a script for collecting information from `metrics.csv` files inside a given folder and creating a table.
+- `src/scripts/build_metrics_plot.py` — a script for visualization a tables of metrics with different algorithms.
   <img width="3668" height="1506" alt="image" src="https://github.com/user-attachments/assets/3cee76a9-d24b-4583-b628-47bb4f924233" />
 - `src/scripts/build_heatmap.py` — a script for visualizing a heat map of agents actions.
   <img width="2103" height="1865" alt="image" src="https://github.com/user-attachments/assets/1387fd2e-92a7-42a1-a1c9-4998d9364913" />
-- and others.
+- `src/scripts/build_spider_plot.py` — a script for visualization a spider plot of algorithns.
+  <img width="2024" height="1833" alt="image" src="https://github.com/user-attachments/assets/b7bac381-1bdf-40c9-bf27-9759a7c38eda" />
 
 ## License
 
