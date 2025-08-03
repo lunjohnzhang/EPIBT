@@ -38,24 +38,29 @@ PRINT_TIME = True
 '''
 
 '''
-'PIBT+traffic flow',
+'Causal PIBT+traffic flow',
+'EPIBT(3)+LNS',
+'EPIBT(4)+LNS',
+'EPIBT(5)+LNS',
+'LoRR24-Winner',
+'WPPL',
+'''
+
+'''
+'Causal PIBT+traffic flow',
 'EPIBT(3)+LNS+GG',
+'EPIBT(4)+LNS+GG',
+'EPIBT(5)+LNS+GG',
 'LoRR24-Winner+GG',
 'WPPL+GG',
 '''
 
-'''
-'PIBT+traffic flow',
-    'EPIBT(3)+LNS+GG',
-    'EPIBT(4)+LNS+GG',
-    'EPIBT(5)+LNS+GG',
-    'LoRR24-Winner+GG',
-    'WPPL+GG',
-'''
-
 PLANNERS = [
+    'PIBT',
+    'winPIBT',
     'EPIBT(1)',
     'EPIBT(2)',
+    'EPIBT(3)',
 ]
 
 # plan_algos = ["EPIBT(1)", "EPIBT(2)", "EPIBT(3)"]
@@ -69,7 +74,7 @@ markers = ['o', 'v', 's', 'p', '*', 'x', 'D', 'P']
 
 data = pd.read_csv('metrics.csv', sep=',')
 
-maps = set(data.groupby('map type').groups)
+maps = {'RANDOM', 'CITY'}#set(data.groupby('map type').groups)
 print("maps:", maps)
 
 is_first = True
@@ -96,14 +101,14 @@ def add_map(map_name, map_text, column):
         ax.set_xticks([])
         ax.set_yticks([])
 
-    #grouped.groups
+    # grouped.groups
     for planner_type in PLANNERS:
-        #if len(PLANNERS) != 0 and not planner_type in PLANNERS:
+        # if len(PLANNERS) != 0 and not planner_type in PLANNERS:
         #    continue
         if not planner_type in grouped.groups:
-            continue
+            pass  # continue
         df = grouped.get_group(planner_type)
-        #planner_type = PLANNERS.get(kek)
+        # planner_type = PLANNERS.get(kek)
 
         times = np.maximum(0.1, df['avg planner time (ms)'])
 
@@ -158,7 +163,7 @@ if __name__ == '__main__':
     row_len = 1
     if PRINT_TIME:
         row_len = 2
-    fig, axes = plt.subplots(row_len, len(maps), figsize=(18, 4 * row_len))
+    fig, axes = plt.subplots(row_len, len(maps), figsize=(8, 3 * row_len))
 
     add_map('RANDOM', 'random-32-32-20', 0)  # \nSize: 32x32\n|V|=819
     add_map('CITY', 'Paris-1-256', 1)  # \nSize: 256x256\n|V|=47240
@@ -180,7 +185,7 @@ if __name__ == '__main__':
         else:
             break
     # print(labels)
-    fig.legend(lines, labels, loc='lower center', ncol=4)
-
-    plt.savefig("metrics_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.2)
+    fig.legend(lines, labels, loc='lower center', ncol=10, borderaxespad=0.2)
+    #plt.tight_layout()
+    plt.savefig("metrics_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.35)
     # plt.show()

@@ -83,8 +83,13 @@ def build_spider_plot(df):
         current_angles = angles + angles[:1]
 
         # Рисуем линию
-        ax.plot(current_angles, scores, linewidth=2, linestyle='solid', label=planner)
-        # ax.fill(current_angles, scores, alpha=0.1)
+        if planner in ['PIBT', 'Causal PIBT', 'EPIBT(3)']:
+            ax.plot(current_angles, scores, linewidth=3, linestyle='-', label=planner)
+        elif "+GG" in planner:
+            ax.plot(current_angles, scores, linewidth=3, linestyle='-.', label=planner)
+        else:
+            ax.plot(current_angles, scores, linewidth=3, linestyle='--', label=planner)
+        # ax.fill(current_angles, scores, alpha=0.01)
 
     # Настройки графика
     ax.set_theta_offset(np.pi / 2)

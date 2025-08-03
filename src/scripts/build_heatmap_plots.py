@@ -5,8 +5,8 @@ import matplotlib.colors
 import pandas as pd
 
 DIV_NUM = 5000
-BEGIN_PATH = "solutions_new_epibt_shit/lmapf/"
-END_PATH = "/city/0/heatmap_N.csv"
+BEGIN_PATH = "solutions_super/lmapf-t/"
+END_PATH = "/sortation/9/heatmap_w.csv"
 OUTPUT_FILE = "src/scripts/kek.pdf"
 
 good_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", [(0, '#008064'), (.1, "#FFFF64"), (0.5, "#FF6464"),
@@ -14,17 +14,16 @@ good_cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", [(0, '#00806
 
 if __name__ == '__main__':
     algos = [
-        #["epibt(1)", "EPIBT(1)"],
-        #["epibt(1)+gg", "EPIBT(1)+GG"],
-        #["epibt(1)+lns+gg", "EPIBT(1)+LNS+GG"],
-
-        #["epibt(2)", "EPIBT(2)"],
-        #["epibt(2)+gg", "EPIBT(2)+GG"],
-        ["epibt(2)+lns+gg", "EPIBT(2)+LNS+GG"],
-
-        #["epibt(3)", "EPIBT(3)"],
-        #["epibt(3)+gg", "EPIBT(3)+GG"],
+        ["causal_pibt", "Causal PIBT"],
+        ["pibt_tf", "PIBT+traffic flow"],
+        ["epibt(3)", "EPIBT(3)"],
+        ["epibt(3)+gg", "EPIBT(3)+GG"],
+        ['lorr24_winner', "LoRR24-Winner"],
+        ['lorr24_winner+gg', "LoRR24-Winner+GG"],
+        ["epibt(3)+lns", "EPIBT(3)+LNS"],
         ["epibt(3)+lns+gg", "EPIBT(3)+LNS+GG"],
+        ["wppl", "WPPL"],
+        ["wppl+gg", "WPPL+GG"],
     ]
 
     '''["causal_pibt", "Causal PIBT"],
@@ -51,9 +50,9 @@ if __name__ == '__main__':
         ["wppl+gg", "WPPL+GG"],'''
 
     row_size = 2
-    col_size = 2
-    fig, axes = plt.subplots(col_size, row_size, figsize=(10, 4), constrained_layout=True)
-    #fig, axes = plt.subplots(col_size, row_size, figsize=(7, 6), constrained_layout=True)
+    col_size = 5
+    # fig, axes = plt.subplots(col_size, row_size, figsize=(10, 4), constrained_layout=True)
+    fig, axes = plt.subplots(col_size, row_size, figsize=(7, 6), constrained_layout=True)
 
     row = 0
     col = 0

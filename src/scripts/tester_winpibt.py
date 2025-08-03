@@ -7,7 +7,7 @@ def process_test(map, agents_num, steps_num, test_id):
     with open(f"tmp_{map.lower()}_{test_id}.config", 'w') as file:
         print(
             f"PROBLEM_TYPE=LMAPF\n\
-SOLVER_TYPE=winPIBT\n\
+SOLVER_TYPE=PIBT\n\
 field=./tests/{map.lower()}/map.txt\n\
 agentnum={agents_num}\n\
 timesteplimit={steps_num}\n\
@@ -28,44 +28,42 @@ printtime=1\n\
 detailedlog=0\n\
 WarshallFloyd=0\n\
 ID=1\n\
-window=10\n\
 suboptimal=1.5\n\
 softmode=1\n\
 runtime_limit={steps_num * 1000}", file=file
         )
 
-    os.makedirs(f"solutions/lmapf-t/winpibt/{map.lower()}/{test_id}/", exist_ok=True)
+    os.makedirs(f"solutions/lmapf/real_pibt/{map.lower()}/{test_id}/", exist_ok=True)
     ret = os.system(
-        f"./src/planner/winpibt/bin/testapp -p tmp_{map.lower()}_{test_id}.config > solutions/lmapf-t/winpibt/{map.lower()}/{test_id}/log.txt")
+        f"./src/planner/winpibt/bin/testapp -p tmp_{map.lower()}_{test_id}.config > solutions/lmapf/real_pibt/{map.lower()}/{test_id}/log.txt")
     assert ret == 0, "invalid return code: " + str(ret)
     print("done test: ", map, test_id, ", ret:", ret, flush=True)
 
-'''["RANDOM", 100, 1000, 0],
-["RANDOM", 200, 1000, 1],
-["RANDOM", 300, 1000, 2],
-["RANDOM", 400, 1000, 3],
-["RANDOM", 500, 1000, 4],
-["RANDOM", 600, 1000, 5],
-["RANDOM", 700, 1000, 6],
-["RANDOM", 800, 1000, 7],
-
-["CITY", 1000, 5000, 0],
-["CITY", 2000, 5000, 1],
-["CITY", 3000, 5000, 2],
-["CITY", 4000, 5000, 3],
-["CITY", 5000, 5000, 4],
-["CITY", 6000, 5000, 5],
-["CITY", 7000, 5000, 6],
-["CITY", 8000, 5000, 7],
-["CITY", 9000, 5000, 8],
-["CITY", 10000, 5000, 9],'''
-
 X = [
+    ["RANDOM", 100, 1000, 0],
+    ["RANDOM", 200, 1000, 1],
+    ["RANDOM", 300, 1000, 2],
+    ["RANDOM", 400, 1000, 3],
+    ["RANDOM", 500, 1000, 4],
+    ["RANDOM", 600, 1000, 5],
+    ["RANDOM", 700, 1000, 6],
+    ["RANDOM", 800, 1000, 7],
 
-    #["GAME", 500, 5000, 0],
-    #["GAME", 1000, 5000, 1],
-    #["GAME", 1500, 5000, 2],
-    #["GAME", 2000, 5000, 3],
+    ["CITY", 1000, 5000, 0],
+    ["CITY", 2000, 5000, 1],
+    ["CITY", 3000, 5000, 2],
+    ["CITY", 4000, 5000, 3],
+    ["CITY", 5000, 5000, 4],
+    ["CITY", 6000, 5000, 5],
+    ["CITY", 7000, 5000, 6],
+    ["CITY", 8000, 5000, 7],
+    ["CITY", 9000, 5000, 8],
+    ["CITY", 10000, 5000, 9],
+
+    ["GAME", 500, 5000, 0],
+    ["GAME", 1000, 5000, 1],
+    ["GAME", 1500, 5000, 2],
+    ["GAME", 2000, 5000, 3],
     ["GAME", 2500, 5000, 4],
     ["GAME", 3000, 5000, 5],
     ["GAME", 3500, 5000, 6],
@@ -103,7 +101,7 @@ def f(id):
 stop_event = threading.Event()
 
 try:
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         executor.map(f, range(len(X)))
 except KeyboardInterrupt:
     print("\nПолучен Ctrl+C, останавливаем потоки...", flush=True)

@@ -3,8 +3,16 @@ import os
 from pathlib import Path
 
 INPUT_DIRS = [
+    #"solutions_faster/lmapf",
+    #"solutions_faster_epibt_versions"
+    #"solutions_faster/lmapf-t",
+    #"solutions_super/lmapf-t/epibt(3)",
+
+    #"solutions_super/lmapf-t",
+
+    "solutions",
     #"solutions_epibt_versions",
-    "solutions_super/lmapf",
+    #"solutions_super/lmapf",
     #"solutions_super/lmapf-t",
     #"solutions_new_4",
     #"solutions_new_2",
@@ -18,7 +26,6 @@ INPUT_DIRS = [
 
     #"solutions_visited",
     #"solutions_epibt_opw",
-    #"solutions",
               ]
 OUTPUT_FILENAME = 'metrics.csv'
 REMOVE_ACTIONS = True

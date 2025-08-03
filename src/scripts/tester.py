@@ -18,20 +18,20 @@ for map in ["RANDOM",
 map_type = {map}\n\
 \n\
 # Planner algorithms: PIBT, CAUSAL_PIBT, PIBT_TF, EPIBT, EPIBT_LNS, PEPIBT_LNS, WPPL\n\
-planner_type = EPIBT\n\
+planner_type = PIBT\n\
 \n\
 # Scheduler types: CONST, GREEDY\n\
 scheduler_type = CONST\n\
 \n\
 # Graph Guidance types: DISABLE, ENABLE\n\
-graph_guidance_type = ENABLE\n\
+graph_guidance_type = DISABLE\n\
 \n\
 # TestSystem file paths\n\
 map_file = tests/{map.lower()}/map.txt\n\
 tasks_path = tests/{map.lower()}/tasks_one.csv\n\
 agents_path = tests/{map.lower()}/\n\
 steps_num = {steps_num}\n\
-output_path = solutions/lmapf-t/epibt(3)+gg/{map.lower()}", file=file
+output_path = real_pibt/{map.lower()}", file=file
         )
     ret = os.system("./bin/main tmp.config")
     assert ret == 0, "invalid return code: " + str(ret)
