@@ -35,8 +35,8 @@ EPIBT_LNS::RetType EPIBT_LNS::try_build(uint32_t r, uint32_t &counter) {
         } else if (to_r != -2) {
             ASSERT(0 <= to_r && to_r < robots.size(), "invalid to_r");
 
-            if (curr_visited[to_r] == visited_counter ||                     // если мы уже построили его сейчас
-                (visited[to_r] == visited_counter && visited_num[to_r] >= 10)// ограничение на количество посещений <= 10
+            if (curr_visited[to_r] == visited_counter ||                                    // если мы уже построили его сейчас
+                (visited[to_r] == visited_counter && visited_num[to_r] >= EPIBT_REVISIT_NUM)// ограничение на количество посещений <= 10
             ) {
                 continue;
             }

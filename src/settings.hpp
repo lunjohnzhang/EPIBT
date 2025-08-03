@@ -34,6 +34,8 @@ constexpr uint32_t THREADS_NUM = THREADS_NUM_DEFAULT;
  * 1) улучшить проверки в Answer
  */
 
+constexpr uint32_t EPIBT_REVISIT_NUM = 10;
+
 // TODO: remove get_operation_weight
 
 // #define ENABLE_EPIBT_SMART_OPERATION_EXECUTION
