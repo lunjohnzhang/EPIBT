@@ -63,9 +63,6 @@ int64_t EPIBT::get_smart_dist_IMPL(uint32_t r, uint32_t desired) const {
         }
     }
     dist = dist * static_cast<int64_t>(get_operations().size()) - desired;
-
-    // - get_operation_weight(desired);
-    //- (int64_t)rnd.get(0, get_operations().size() - 1);
     return dist;
 }
 
@@ -151,9 +148,9 @@ EPIBT::RetType EPIBT::build_impl(uint32_t r) {
         } else if (to_r != -2) {
             ASSERT(0 <= to_r && to_r < robots.size(), "invalid to_r: " + std::to_string(to_r));
 
-            if (curr_visited[to_r] == visited_counter ||                                       // если мы уже построили его сейчас
+            if (curr_visited[to_r] == visited_counter ||                                         // если мы уже построили его сейчас
                 (visited[to_r] == visited_counter && visited_num[to_r] >= EPIBT_REVISIT_VALUE) ||// ограничение на количество посещений <= EPIBT_REVISIT_VALUE
-                robots[to_r].priority <= inheritance_priority                                  // не идем в агента более высокого приоритета
+                robots[to_r].priority <= inheritance_priority                                    // не идем в агента более высокого приоритета
             ) {
                 continue;
             }
