@@ -10,67 +10,8 @@ from matplotlib.ticker import MaxNLocator
 
 PRINT_TIME = True
 
-'''
-'PIBT+MAO(3)',
-'PIBT+MAO(3)+Revisit(∞)',
-'PIBT+MAO(3)+Revisit(10)',
-'PIBT+MAO(3)+Revisit(10)+IO',
-
-'PIBT+MAO(4)+Revisit(10)',
-'PIBT+MAO(4)+Revisit(10)+IO',
-
-'PIBT+MAO(5)+Revisit(10)',
-'PIBT+MAO(5)+Revisit(10)+IO',
-'''
-
-'''
-'PIBT',
-'PIBT+Revisit(10)',
-'Causal PIBT',
-'EPIBT(3)',
-'''
-
-'''
-'PIBT+traffic flow',
-'EPIBT(3)+LNS',
-'LoRR24-Winner',
-'WPPL',
-'''
-
-'''
-'Causal PIBT+traffic flow',
-'EPIBT(3)+LNS',
-'EPIBT(4)+LNS',
-'EPIBT(5)+LNS',
-'LoRR24-Winner',
-'WPPL',
-'''
-
-'''
-'Causal PIBT+traffic flow',
-'EPIBT(3)+LNS+GG',
-'EPIBT(4)+LNS+GG',
-'EPIBT(5)+LNS+GG',
-'LoRR24-Winner+GG',
-'WPPL+GG',
-'''
-
-'''
-'EPIBT(3)+Revisit(1)',
-'EPIBT(3)+Revisit(2)',
-'EPIBT(3)+Revisit(4)',
-'EPIBT(3)+Revisit(8)',
-'EPIBT(3)+Revisit(10)',
-'EPIBT(3)+Revisit(16)',
-'EPIBT(3)+Revisit(25)',
-'EPIBT(3)+Revisit(50)',
-'''
-
 PLANNERS = [
     'PIBT',
-    'winPIBT',
-    'EPIBT(1)',
-    'EPIBT(2)',
     'EPIBT(3)',
 ]
 
@@ -112,14 +53,10 @@ def add_map(map_name, map_text, column):
         ax.set_xticks([])
         ax.set_yticks([])
 
-    # grouped.groups
     for planner_type in PLANNERS:
-        # if len(PLANNERS) != 0 and not planner_type in PLANNERS:
-        #    continue
         if not planner_type in grouped.groups:
-            pass  # continue
+            pass
         df = grouped.get_group(planner_type)
-        # planner_type = PLANNERS.get(kek)
 
         times = np.maximum(0.1, df['avg planner time (ms)'])
 
@@ -150,12 +87,12 @@ def add_map(map_name, map_text, column):
                 ax = axes[1][column]
             ax.plot(df['agents num'], times, alpha=1, label=planner_type,
                     marker=planner_to_marker[planner_type])
-            ax.set_yscale('log')
+            #ax.set_yscale('log')
             if is_first:
                 ax.set_ylabel('Decision Time (ms)')
             ax.grid(True)
             ax.set_xlabel('Number of Agents')
-            ax.set_ylim(0.07, 1500)
+            #ax.set_ylim(0.07, 1500)
 
     if is_first:
         is_first = False
@@ -195,8 +132,5 @@ if __name__ == '__main__':
             labels.pop(-1)
         else:
             break
-    # print(labels)
-    fig.legend(lines, labels, loc='lower center', ncol=6, borderaxespad=0.2)
-    #plt.tight_layout()
+    fig.legend(lines, labels, loc='lower center', ncol=8, borderaxespad=0.2)
     plt.savefig("metrics_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.35)
-    # plt.show()

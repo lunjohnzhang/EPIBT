@@ -20,33 +20,31 @@ for map_type, grouped in data.groupby('map type'):
 
 print(best_throughput)
 
-# planner_type#map_type
+# [planner_type#map_type]
 planner_throughput = {}
 
 for planner_type, grouped in data.groupby('planner type'):
     for map_type, grouped2 in grouped.groupby('map type'):
-        planner_throughput[planner_type + "#" + map_type] = 0
         for test_id, grouped3 in grouped2.groupby('test id'):
-            planner_throughput[planner_type + "#" + map_type] += float(grouped3['throughput']) / best_throughput[
-                map_type + "#" + str(test_id)]
-        if map_type == "RANDOM":
-            planner_throughput[planner_type + "#" + map_type] = planner_throughput[planner_type + "#" + map_type] / 8
-        else:
-            planner_throughput[planner_type + "#" + map_type] = planner_throughput[planner_type + "#" + map_type] / 10
+            planner_throughput[planner_type + "#" + map_type + "#" + str(test_id)] = float(grouped3['throughput']) / \
+                                                                                     best_throughput[
+                                                                                         map_type + "#" + str(test_id)]
 
 print(planner_throughput)
 
 data = {
     'planner type': [],
     'map type': [],
+    'test id': [],
     'score': [],
 }
 
 for key in planner_throughput:
-    planner_type, map_type = key.split('#')
-    print(planner_type, map_type, planner_throughput[key])
+    planner_type, map_type, test_id = key.split('#')
+    print(planner_type, map_type, test_id, planner_throughput[key])
     data['planner type'].append(planner_type)
     data['map type'].append(map_type)
+    data['test id'].append(test_id)
     data['score'].append(planner_throughput[key])
 
 df = pd.DataFrame(data)
@@ -58,14 +56,14 @@ def build_spider_plot(df):
     # Подготовка данных
     planners = df['planner type'].unique()
     map_types = df['map type'].unique()
-    angles = np.linspace(0, 2 * np.pi, len(map_types), endpoint=False).tolist()
+    angles = np.linspace(0, 2 * np.pi, 48, endpoint=False).tolist()
 
     # Создаем фигуру
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, polar=True)
 
     print(planners)
-    
+
     # Define color mapping for related planners
     color_map = {
         'PIBT': '#1f77b4',  # Blue
@@ -79,9 +77,10 @@ def build_spider_plot(df):
         'LoRR24-Winner': '#9467bd',  # Purple
         'LoRR24-Winner+GG': '#9467bd',  # Same as LoRR24-Winner
     }
-    
+
     # Для каждого planner type рисуем свой график
-    for planner in ['PIBT', 'Causal PIBT', 'EPIBT(3)', 'WPPL', 'LoRR24-Winner', 'EPIBT(3)+LNS', 'Causal PIBT+traffic flow','WPPL+GG',
+    for planner in ['PIBT', 'Causal PIBT', 'EPIBT(3)', 'WPPL', 'LoRR24-Winner', 'EPIBT(3)+LNS', 'Causal PIBT+traffic flow',
+                    'WPPL+GG',
                     'LoRR24-Winner+GG', 'EPIBT(3)+LNS+GG']:  # planners:
         # Фильтруем данные по planner type
         planner_data = df[df['planner type'] == planner]
@@ -89,8 +88,15 @@ def build_spider_plot(df):
         # Создаем массив scores в правильном порядке углов
         scores = []
         for m in map_types:
-            val = planner_data[planner_data['map type'] == m]['score'].values
-            scores.append(val[0] if len(val) > 0 else 0)
+            max_test = 10
+            if m == "RANDOM":
+                max_test = 8
+            for test_id in range(max_test):
+                # val = planner_data[planner_data['map type'] == m and planner_data['test id'] == test_id]['score'].values
+                # scores.append(val[0] if len(val) > 0 else 0)
+                kek = planner_data[planner_data['map type'] == m]
+                val = kek[kek['test id'] == str(test_id)].values
+                scores.append(float(val[0][3] if len(val) > 0 else 0))
 
         # Замыкаем график (добавляем первую точку в конец)
         scores += scores[:1]
@@ -103,21 +109,17 @@ def build_spider_plot(df):
             ax.plot(current_angles, scores, linewidth=3, linestyle='--', label=planner, color=color_map[planner])
         else:
             ax.plot(current_angles, scores, linewidth=3, linestyle=':', label=planner, color=color_map[planner])
-        
-        # ax.fill(current_angles, scores, alpha=0.01)
-
 
     # Настройки графика
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
     ax.set_rlabel_position(0)
     plt.yticks(fontweight='bold', fontsize=16)
-    plt.xticks(angles, ['Paris-1-256', 'brc202d', 'random-32-32-20', 'sortation', 'warehouse'], fontweight='bold', fontsize=20)  # map_types
+    plt.xticks(np.linspace(0, 2 * np.pi, 5, endpoint=False).tolist(), ['Paris-1-256', 'brc202d', 'random-32-32-20', 'sortation', 'warehouse'], fontweight='bold', fontsize=20)  # map_types
     ax.tick_params(axis='x', which='major', pad=35)
     plt.ylim(0, 1)
-    # plt.title('Сравнение planner types по разным map types', pad=20)
     plt.legend(prop={'weight': 'bold', 'size': 15}, loc='lower left', bbox_to_anchor=(0.7, 0.8))
-    plt.grid(True)
+    plt.grid(True, linewidth=3)
     plt.tight_layout()
     plt.savefig("spider_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.0)
     plt.show()
