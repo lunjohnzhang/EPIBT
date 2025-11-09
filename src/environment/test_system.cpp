@@ -15,7 +15,6 @@
 
 #include <planner/epibt/epibt.hpp>
 #include <planner/epibt/epibt_lns.hpp>
-#include <planner/epibt/epibt_lns_old.hpp>
 #include <planner/epibt/operations.hpp>
 #include <planner/epibt/operations_map.hpp>
 #include <planner/epibt/pepibt_lns.hpp>
@@ -150,13 +149,6 @@ std::vector<ActionType> TestSystem::get_actions() {
             epibt_prev_operations[r] = get_operation_next(epibt_prev_operations[r]);
         }
     }
-#ifdef ENABLE_ROTATE_MODEL
-    else if (get_planner_type() == PlannerType::EPIBT_LNS_OLD) {
-        EPIBT_LNS_OLD solver(robots, end_time);
-        solver.solve(rnd.get());
-        actions = solver.get_actions();
-    }
-#endif
     else if (get_planner_type() == PlannerType::PEPIBT_LNS) {
         PEPIBT_LNS solver(robots, end_time, epibt_prev_operations);
         solver.solve(rnd.get());
@@ -171,7 +163,7 @@ std::vector<ActionType> TestSystem::get_actions() {
         actions = solver.get_actions();
     }
 #ifdef ENABLE_ROTATE_MODEL
-    else if (get_planner_type() == PlannerType::PIBT_TF || get_planner_type() == PlannerType::CAUSAL_PIBT || get_planner_type() == PlannerType::WPPL) {
+    else if (get_planner_type() == PlannerType::PIBT_TF || get_planner_type() == PlannerType::CAUSAL_PIBT) {
         env.goal_locations.assign(robots.size(), {});
         env.curr_states.assign(robots.size(), {});
         for (uint32_t r = 0; r < robots.size(); r++) {
@@ -185,11 +177,7 @@ std::vector<ActionType> TestSystem::get_actions() {
         }
         env.curr_timestep = timestep;
 
-        if (get_planner_type() == PlannerType::WPPL) {
-            wppl_planner->plan(PLANNER_TIME_LIMIT, actions);
-        } else {
-            causal_pibt_planner->plan(end_time, actions, &env);
-        }
+        causal_pibt_planner->plan(end_time, actions, &env);
     }
 #endif
     else {
@@ -206,7 +194,7 @@ TestSystem::TestSystem(Robots copy_robots, TaskPool copy_task_pool) : robots(std
     }
 
 #ifdef ENABLE_ROTATE_MODEL
-    if (get_planner_type() == PlannerType::PIBT_TF || get_planner_type() == PlannerType::CAUSAL_PIBT || get_planner_type() == PlannerType::WPPL) {
+    if (get_planner_type() == PlannerType::PIBT_TF || get_planner_type() == PlannerType::CAUSAL_PIBT) {
         env.num_of_agents = robots.size();
         env.rows = get_map().get_rows();
         env.cols = get_map().get_cols();
@@ -219,11 +207,6 @@ TestSystem::TestSystem(Robots copy_robots, TaskPool copy_task_pool) : robots(std
     if (get_planner_type() == PlannerType::PIBT_TF || get_planner_type() == PlannerType::CAUSAL_PIBT) {
         causal_pibt_planner = std::make_unique<CausalPIBT>();
         causal_pibt_planner->initialize(&env);
-    }
-
-    if (get_planner_type() == PlannerType::WPPL) {
-        wppl_planner = std::make_unique<WPPL>();
-        wppl_planner->initialize(&env);
     }
 #endif
 }

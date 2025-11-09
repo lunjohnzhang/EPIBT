@@ -5,7 +5,6 @@
 #include <environment/robot.hpp>
 #include <environment/task.hpp>
 #include <planner/causal_pibt/planner.hpp>
-#include <planner/wppl/wppl.hpp>
 #include <scheduler/greedy/greedy_scheduler.hpp>
 #include <utils/randomizer.hpp>
 
@@ -34,8 +33,6 @@ class TestSystem {
 
 #ifdef ENABLE_ROTATE_MODEL
     std::unique_ptr<CausalPIBT> causal_pibt_planner;
-
-    std::unique_ptr<WPPL> wppl_planner;
 #endif
 
     void gen_random_agents();
