@@ -16,6 +16,10 @@ The tests are in the [tests](tests) folder. The tests store 5 maps: `random` (ra
 
 <img width="1791" height="1788" alt="image" src="https://github.com/user-attachments/assets/0feb1ce8-eecb-41ec-ad0e-56bec8e906b5" />
 
+## Logs
+
+Experiment logs are located [here](https://github.com/Straple/OMAPFS_Solutions).
+
 ## Building
 
 You need [CMake](https://cmake.org/) (≥v3.16), [Boost](https://www.boost.org/) (≥v1.49.0)\
