@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
 #include <iostream>
+#include <vector>
 
 // contains information about map:
 // rows, cols, is_free

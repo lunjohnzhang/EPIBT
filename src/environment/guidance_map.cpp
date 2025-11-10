@@ -26,7 +26,6 @@ void GuidanceMap::overlay(const std::vector<std::string> &image, uint32_t x, uin
         for (uint32_t dy = 0; dy < image[dx].size(); dy++) {
             ASSERT(x + dx < desired.size(), "invalid x");
             ASSERT(y + dy < desired[x + dx].size(), "invalid y");
-            //ASSERT(desired[x + dx][y + dy] == '.', "already set");
             desired[x + dx][y + dy] = image[dx][dy];
         }
     }
@@ -57,12 +56,6 @@ GuidanceMap::GuidanceMap(MapType type, const Map &map)
             }
         }
     }
-
-    /*{
-        std::ofstream output("Solution/Data/guidance_map_warehouse.txt");
-        output << *this;
-    }
-    std::exit(0);*/
 }
 
 uint32_t GuidanceMap::get_rows() const {

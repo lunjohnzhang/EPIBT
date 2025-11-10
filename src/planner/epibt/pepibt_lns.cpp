@@ -3,7 +3,7 @@
 #include <planner/epibt/epibt_lns.hpp>
 #include <utils/tools.hpp>
 
-PEPIBT_LNS::PEPIBT_LNS(Robots& robots, TimePoint end_time, const std::vector<uint32_t> &operations) : robots(robots), end_time(end_time), best_actions(this->robots.size(), ActionType::WAIT), best_desires(operations) {
+PEPIBT_LNS::PEPIBT_LNS(Robots &robots, TimePoint end_time, const std::vector<uint32_t> &operations) : robots(robots), end_time(end_time), best_actions(this->robots.size(), ActionType::WAIT), best_desires(operations) {
 }
 
 void PEPIBT_LNS::solve(uint64_t seed) {

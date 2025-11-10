@@ -1,8 +1,8 @@
 #include <environment/robot.hpp>
 
+#include <environment/graph.hpp>
 #include <utils/assert.hpp>
 #include <utils/tools.hpp>
-#include <environment/graph.hpp>
 
 bool Robot::is_disable() const {
     return priority == -1;

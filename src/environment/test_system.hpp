@@ -23,19 +23,19 @@ class TestSystem {
 
     std::vector<uint32_t> finished_tasks;
 
-    std::vector<uint32_t> epibt_prev_operations;
-
     Environment env;
 
-    std::unique_ptr<GreedyScheduler> greedy_scheduler;
-
     Randomizer rnd;
+
+    std::unique_ptr<GreedyScheduler> greedy_scheduler;
 
 #ifdef ENABLE_ROTATE_MODEL
     std::unique_ptr<CausalPIBT> causal_pibt_planner;
 #endif
 
-    void gen_random_agents();
+    std::vector<uint32_t> epibt_prev_operations;
+
+    void build_random_agents();
 
     void update(Answer &answer);
 

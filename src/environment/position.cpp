@@ -1,17 +1,19 @@
 #include <environment/position.hpp>
 
-#include <utils/assert.hpp>
 #include <environment/map.hpp>
+#include <utils/assert.hpp>
 
 Position::Position(uint32_t pos
 #ifdef ENABLE_ROTATE_MODEL
-        , uint32_t dir
+                   ,
+                   uint32_t dir
 #endif
-)
-        : row((pos - 1) / get_map().get_cols()),
-          col((pos - 1) % get_map().get_cols())
+                   )
+    : row((pos - 1) / get_map().get_cols()),
+      col((pos - 1) % get_map().get_cols())
 #ifdef ENABLE_ROTATE_MODEL
-, dir(dir)
+      ,
+      dir(dir)
 #endif
 {
     ASSERT(pos < get_map().get_size(), "invalid pos: " + std::to_string(pos));
@@ -24,13 +26,15 @@ Position::Position(uint32_t pos
 
 Position::Position(uint32_t row, uint32_t col
 #ifdef ENABLE_ROTATE_MODEL
-        , uint32_t dir
+                   ,
+                   uint32_t dir
 #endif
-)
-        : row(row),
-          col(col)
+                   )
+    : row(row),
+      col(col)
 #ifdef ENABLE_ROTATE_MODEL
-, dir(dir)
+      ,
+      dir(dir)
 #endif
 {
     ASSERT(row < get_map().get_rows(), "invalid row: " + std::to_string(row));
@@ -147,7 +151,7 @@ bool operator==(const Position &lhs, const Position &rhs) {
     return lhs.row == rhs.row &&
            lhs.col == rhs.col
 #ifdef ENABLE_ROTATE_MODEL
-        && lhs.dir == rhs.dir
+           && lhs.dir == rhs.dir
 #endif
             ;
 }

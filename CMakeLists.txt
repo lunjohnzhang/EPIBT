@@ -30,7 +30,7 @@ endif ()
 if (ENABLE_EPIBT_IO)
     add_definitions(-DENABLE_EPIBT_IO)
     message(STATUS "Enable EPIBT inheritance of operations")
-endif()
+endif ()
 
 # Set compile-time constants
 add_definitions(-DTHREADS_NUM=${THREADS_NUM})

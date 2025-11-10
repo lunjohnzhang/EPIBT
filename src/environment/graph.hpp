@@ -1,14 +1,14 @@
 #pragma once
 
-#include <environment/position.hpp>
 #include <environment/graph_guidance.hpp>
 #include <environment/map.hpp>
+#include <environment/position.hpp>
+
+#include <settings.hpp>
 
 #include <array>
 #include <cstdint>
 #include <vector>
-
-#include <settings.hpp>
 
 // Contains information about graph.
 // About edges, transform position to node and back.
@@ -56,7 +56,8 @@ public:
     // (pos, dir) -> graph node
     [[nodiscard]] uint32_t get_node(uint32_t pos
 #ifdef ENABLE_ROTATE_MODEL
-            , uint32_t dir
+                                    ,
+                                    uint32_t dir
 #endif
     ) const;
 

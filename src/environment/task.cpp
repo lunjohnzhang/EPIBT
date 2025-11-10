@@ -1,6 +1,5 @@
 #include <environment/task.hpp>
 
-#include <environment/map.hpp>
 #include <utils/assert.hpp>
 #include <utils/tools.hpp>
 

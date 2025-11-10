@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include <settings.hpp>
+
+#include <string>
 
 bool my_assert_failed(const std::string &message, const std::string &filename, const int line);
 

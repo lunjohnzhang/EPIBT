@@ -18,15 +18,17 @@ public:
 
     explicit
 #endif
-    Position(uint32_t pos
+            Position(uint32_t pos
 #ifdef ENABLE_ROTATE_MODEL
-            , uint32_t dir
+                     ,
+                     uint32_t dir
 #endif
-    );
+            );
 
     Position(uint32_t x, uint32_t y
 #ifdef ENABLE_ROTATE_MODEL
-            , uint32_t dir
+             ,
+             uint32_t dir
 #endif
     );
 

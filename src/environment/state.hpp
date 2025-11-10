@@ -1,14 +1,12 @@
 #pragma once
-
+#ifdef ENABLE_ROTATE_MODEL
 #include <cstdint>
 #include <vector>
 
 struct State {
     int location = -1;
     int timestep = -1;
-#ifdef ENABLE_ROTATE_MODEL
     int orientation = -1;
-#endif
 
     struct Hasher {
         uint64_t operator()(const State &n) const;
@@ -24,3 +22,4 @@ struct State {
 };
 
 using RobotPath = std::vector<State>;
+#endif

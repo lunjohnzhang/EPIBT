@@ -2,7 +2,6 @@
 
 #include <utils/assert.hpp>
 #include <utils/tools.hpp>
-#include <settings.hpp>
 
 #include <queue>
 
@@ -36,9 +35,10 @@ void HeuristicMatrix::build(uint32_t source, const Graph &graph) {
         for (uint32_t action = 0; action < ACTIONS_NUM - 1; action++) {
             uint32_t to = 0;
 #ifdef ENABLE_ROTATE_MODEL
-            ASSERT(static_cast<ActionType>(action) == ActionType::FORWARD || //
-                   static_cast<ActionType>(action) == ActionType::ROTATE || //
-                   static_cast<ActionType>(action) == ActionType::COUNTER_ROTATE, "invalid action");
+            ASSERT(static_cast<ActionType>(action) == ActionType::FORWARD ||
+                           static_cast<ActionType>(action) == ActionType::ROTATE ||
+                           static_cast<ActionType>(action) == ActionType::COUNTER_ROTATE,
+                   "invalid action");
 
             if (action == 0) {
                 to = get_graph().get_to_node(node, 1);
@@ -54,10 +54,11 @@ void HeuristicMatrix::build(uint32_t source, const Graph &graph) {
                 to = get_graph().get_to_node(node, 1);
             }
 #else
-            ASSERT(static_cast<ActionType>(action) == ActionType::EAST || //
-                   static_cast<ActionType>(action) == ActionType::SOUTH || //
-                   static_cast<ActionType>(action) == ActionType::WEST || //
-                   static_cast<ActionType>(action) == ActionType::NORTH, "invalid action");
+            ASSERT(static_cast<ActionType>(action) == ActionType::EAST ||         //
+                           static_cast<ActionType>(action) == ActionType::SOUTH ||//
+                           static_cast<ActionType>(action) == ActionType::WEST || //
+                           static_cast<ActionType>(action) == ActionType::NORTH,
+                   "invalid action");
             /*
             0 EAST >
             1 SOUTH v
@@ -98,9 +99,11 @@ HeuristicMatrix::HeuristicMatrix(const Graph &graph) {
         for (uint32_t pos = thr + 1; pos < matrix.size(); pos += THREADS_NUM_VALUE) {
             if (Position(pos
 #ifdef ENABLE_ROTATE_MODEL
-                    ,0
+                         ,
+                         0
 #endif
-            ).is_valid()) {
+                         )
+                        .is_valid()) {
                 build(pos, graph);
             }
         }

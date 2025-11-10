@@ -10,12 +10,12 @@
 
 class GuidanceMap {
     // map[x][y]:
-    // @ препятствие
-    // > рекомендуем вправо
-    // < рекомендуем влево
-    // ^ рекомендуем вверх
-    // v рекомендуем вниз
-    // . нет рекомендации
+    // @ wall
+    // > recommend right
+    // < recommend left
+    // ^ recommend top
+    // v recommend bottom
+    // . no recommend
     std::vector<std::string> desired;
 
     void set_random(const Map &map);

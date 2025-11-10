@@ -93,9 +93,6 @@ void GraphGuidance::set_warehouse() {
         bit = (bit + 1) % 8;
     }
 
-    // [KEK]: повышает вес верхней и нижней плашки, что уменьшает загруженность агентов там
-    // реально улучшает
-    // 36754 -> 37548
     {
         add(3, 0, 10, cols - 1, 0, 0, 1);
         add(3, 0, 10, cols - 1, 1, 0, 1);
@@ -140,9 +137,6 @@ void GraphGuidance::set_sortation() {
         }
     }
 
-    // [KEK]: повышает вес верхней и нижней плашки, что уменьшает загруженность агентов там
-    // реально улучшает
-    // 35816 -> 38860
     {
         add(0, 0, 8, cols - 1, 0, 0, 1);
         add(0, 0, 8, cols - 1, 1, 0, 1);
@@ -239,7 +233,7 @@ GraphGuidance::GraphGuidance(const GuidanceMap &gmap)
             //CCR: 2
             //W:   3
 
-            // смотрит в нужное направление
+            // recommend direction
             // >
             graph[pos][dir][0] = w1;// FW
             graph[pos][dir][1] = w1;// CR
@@ -271,7 +265,7 @@ GraphGuidance::GraphGuidance(const GuidanceMap &gmap)
             graph[pos][dir][3] = w1;// W
 
 #else
-            // смотрит в нужное направление
+            // recommend direction
             // >
             graph[pos][dir] = w1;
             graph[pos][(dir + 1) % 4] = w2;
@@ -282,12 +276,6 @@ GraphGuidance::GraphGuidance(const GuidanceMap &gmap)
     }
 
     set_walls();
-
-    /*{
-        std::ofstream output("graph_guidance");
-        output << *this;
-    }
-    _exit(0);*/
 }
 
 uint32_t GraphGuidance::get(const Position &p, uint32_t action) const {

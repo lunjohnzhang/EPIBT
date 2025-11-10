@@ -18,9 +18,7 @@
 #include <utils/config.hpp>
 #include <utils/tools.hpp>
 
-#include <algorithm>
 #include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <mutex>
 #include <numeric>
@@ -205,7 +203,6 @@ int main(int argc, char *argv[]) {
 
                 {
                     std::unique_lock locker(mutex);
-                    // answer.write_agent();
                     std::cout << "Done  test " << test << ", thr: " << thr << ", time: " << timer << std::endl;
                 }
             }

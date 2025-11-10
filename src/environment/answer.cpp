@@ -8,8 +8,6 @@
 #include <unordered_map>
 
 void Answer::validate_actions(uint32_t step) const {
-    // проверить, что нет коллизий по вершинам и ребрам
-
     std::unordered_map<uint32_t, uint32_t> pos_usage, edge_usage;
     for (uint32_t r = 0; r < robots.size(); r++) {
         Position pos = robots[r].positions[step];
@@ -37,8 +35,6 @@ void Answer::validate_actions(uint32_t step) const {
 }
 
 void Answer::validate_schedule(uint32_t step) const {
-    // проверить, что нет коллизий по задачам
-
     // task_used[task_id] = assigned agent
     std::unordered_map<uint32_t, uint32_t> task_used;
     for (uint32_t r = 0; r < robots.size(); r++) {
@@ -48,7 +44,6 @@ void Answer::validate_schedule(uint32_t step) const {
             ASSERT(tasks[step].at(task_id).task_id == task_id, "invalid task id");
 
             if (tasks[step].at(task_id).is_taken) {
-                // эта задача уже выполняется кем-то другим и не может быть переназначена
                 ASSERT(tasks[step].at(task_id).agent_assigned == r, "invalid task assigned");
             }
             ASSERT(!task_used.contains(task_id), "task collision");

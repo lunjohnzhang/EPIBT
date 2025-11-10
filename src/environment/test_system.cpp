@@ -16,15 +16,13 @@
 #include <planner/epibt/epibt.hpp>
 #include <planner/epibt/epibt_lns.hpp>
 #include <planner/epibt/operations.hpp>
-#include <planner/epibt/operations_map.hpp>
 #include <planner/epibt/pepibt_lns.hpp>
 
 #include <fstream>
 #include <map>
 #include <set>
 
-void TestSystem::gen_random_agents() {
-    Randomizer rnd;
+void TestSystem::build_random_agents() {
     std::set<uint32_t> agents;
     uint32_t agents_num = 800;
     while (agents.size() < agents_num) {
@@ -33,21 +31,18 @@ void TestSystem::gen_random_agents() {
             agents.insert(pos);
         }
     }
-    {
-        std::ofstream output("agents_" + std::to_string(agents_num) + ".csv");
-        output << "agent id,row,col\n";
-        uint32_t id = 0;
-        for (uint32_t pos: agents) {
+    std::ofstream output("agents_" + std::to_string(agents_num) + ".csv");
+    output << "agent id,row,col\n";
+    uint32_t id = 0;
+    for (uint32_t pos: agents) {
 #ifdef ENABLE_ROTATE_MODEL
-            Position p(pos, 0);
+        Position p(pos, 0);
 #else
-            Position p(pos);
+        Position p(pos);
 #endif
-            output << id << ',' << p.get_row() << ',' << p.get_col() << '\n';
-            id++;
-        }
+        output << id << ',' << p.get_row() << ',' << p.get_col() << '\n';
+        id++;
     }
-    std::exit(0);
 }
 
 void TestSystem::update(Answer &answer) {
@@ -148,8 +143,7 @@ std::vector<ActionType> TestSystem::get_actions() {
         for (uint32_t r = 0; r < epibt_prev_operations.size(); r++) {
             epibt_prev_operations[r] = get_operation_next(epibt_prev_operations[r]);
         }
-    }
-    else if (get_planner_type() == PlannerType::PEPIBT_LNS) {
+    } else if (get_planner_type() == PlannerType::PEPIBT_LNS) {
         PEPIBT_LNS solver(robots, end_time, epibt_prev_operations);
         solver.solve(rnd.get());
         actions = solver.get_actions();
@@ -187,8 +181,6 @@ std::vector<ActionType> TestSystem::get_actions() {
 }
 
 TestSystem::TestSystem(Robots copy_robots, TaskPool copy_task_pool) : robots(std::move(copy_robots)), task_pool(std::move(copy_task_pool)), epibt_prev_operations(this->robots.size()) {
-    // gen_random_agents();
-
     if (get_scheduler_type() == SchedulerType::GREEDY) {
         greedy_scheduler = std::make_unique<GreedyScheduler>(robots, task_pool);
     }

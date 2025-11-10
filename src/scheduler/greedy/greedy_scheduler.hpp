@@ -30,7 +30,7 @@ class GreedyScheduler {
 
     std::vector<uint32_t> free_tasks;
 
-    // dp[r] = отсортированный вектор (dist, task_id)
+    // dp[r] = sorted list (dist, task_id)
     std::vector<std::vector<std::pair<uint32_t, uint32_t>>> dp;
 
     std::vector<uint32_t> timestep_updated;

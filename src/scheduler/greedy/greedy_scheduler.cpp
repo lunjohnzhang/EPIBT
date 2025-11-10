@@ -34,12 +34,6 @@ void GreedyScheduler::rebuild_dp(TimePoint end_time) {
         rebuild_dp(order[i]);
         ++counter;
     }
-    /*launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
-        for (uint32_t i = thr; i < order.size() && get_now() < end_time; i += THREADS_NUM_VALUE) {
-            rebuild_dp(order[i]);
-            ++counter;
-        }
-    });*/
 }
 
 uint64_t GreedyScheduler::get_dist(uint32_t r, uint32_t t) const {
@@ -103,8 +97,8 @@ void GreedyScheduler::update(uint32_t timestep) {
     // build free_tasks
     for (auto &[t, task]: task_pool) {
         if (
-                task.agent_assigned == -1// нет агента
-                || !task.is_taken        // мы можем поменять задачу
+                task.agent_assigned == -1// no agent
+                || !task.is_taken        // can take task
         ) {
             if (task.agent_assigned != -1) {
                 robots[task.agent_assigned].task_id = -1;
@@ -119,13 +113,12 @@ void GreedyScheduler::update(uint32_t timestep) {
     for (uint32_t r = 0; r < robots.size(); r++) {
         uint32_t t = robots[r].task_id;
 
-        // есть задача и она в процессе выполнения
-        // не можем ее убрать
+        // has task and it's taken
         if (task_pool.contains(t) && task_pool.at(t).is_taken) {
             desires[r] = t;
             continue;
         }
-        // нет задачи
+        // no task
         if (!task_pool.contains(t) || !task_pool.at(t).is_taken) {
             free_robots.push_back(r);
         }
@@ -230,7 +223,6 @@ void GreedyScheduler::solve(TimePoint end_time) {
 
     validate();
 
-    // если робот без задачи, то мы ее дадим. это нужно для алгоритмов, которые не могут без цели
     auto it = free_tasks.begin();
     for (uint32_t r = 0; r < desires.size(); r++) {
         if (desires[r] == -1) {
