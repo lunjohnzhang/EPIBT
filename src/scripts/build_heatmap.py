@@ -12,12 +12,6 @@ DIV_NUM = int(sys.argv[3])  # 1000
 FIGSIZE_ROW = int(sys.argv[4])  # 10
 FIGSIZE_COL = int(sys.argv[5])  # 10
 
-# print(INPUT_FILENAME)
-# print(OUTPUT_FILENAME)
-# print(DIV_NUM)
-# print(FIGSIZE_ROW)
-# print(FIGSIZE_COL)
-
 df = pd.read_csv(INPUT_FILENAME)
 df = df.drop(df.columns[0], axis=1)
 
@@ -39,4 +33,4 @@ ax.imshow(red_mask)
 ax.axis('off')
 fig.colorbar(images[-1], ax=ax)
 plt.savefig(OUTPUT_FILENAME, format='pdf', dpi=400, bbox_inches='tight')
-#plt.show()
+plt.show()

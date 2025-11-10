@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import matplotlib.colors
-# import seaborn as sns
 import pandas as pd
 from PIL import Image
 from matplotlib.ticker import FixedFormatter
@@ -15,14 +14,7 @@ PLANNERS = [
     'EPIBT(3)',
 ]
 
-# plan_algos = ["EPIBT(1)", "EPIBT(2)", "EPIBT(3)"]
-# colors = ['lime', 'dodgerblue', 'orange', 'red', 'blueviolet', 'aqua', 'deeppink', 'brown']
-# colors = ['green', 'blue', 'orange', 'red', 'blueviolet', 'aqua', 'deeppink', 'brown']
-# plan_algos_name = ['EPIBT+LNS+GG', 'EPIBT+LNS', 'EPIBT+GG', 'EPIBT', 'PIBT+GG', 'PIBT', 'WPPL+GG', 'PIBT+traffic flow']
-markers = ['o', 'v', 's', 'p', '*', 'x', 'D', 'P']
-
-# color_palette = sns.color_palette("tab10", 8)
-# plt.rcParams['axes.prop_cycle'] = plt.cycler(color=color_palette)
+MARKERS = ['o', 'v', 's', 'p', '*', 'x', 'D', 'P']
 
 data = pd.read_csv('metrics.csv', sep=',')
 
@@ -61,7 +53,7 @@ def add_map(map_name, map_text, column):
         times = np.maximum(0.1, df['avg planner time (ms)'])
 
         if not planner_type in planner_to_marker:
-            planner_to_marker[planner_type] = markers[marker_it % len(markers)]
+            planner_to_marker[planner_type] = MARKERS[marker_it % len(MARKERS)]
             marker_it += 1
 
         if True:
@@ -87,12 +79,10 @@ def add_map(map_name, map_text, column):
                 ax = axes[1][column]
             ax.plot(df['agents num'], times, alpha=1, label=planner_type,
                     marker=planner_to_marker[planner_type])
-            #ax.set_yscale('log')
             if is_first:
                 ax.set_ylabel('Decision Time (ms)')
             ax.grid(True)
             ax.set_xlabel('Number of Agents')
-            #ax.set_ylim(0.07, 1500)
 
     if is_first:
         is_first = False

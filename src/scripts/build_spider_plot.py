@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import matplotlib.colors
-# import seaborn as sns
 import pandas as pd
 from PIL import Image
 from matplotlib.ticker import FixedFormatter
@@ -52,13 +51,12 @@ print(df)
 
 df.to_csv('table.csv', index=False)
 
+
 def build_spider_plot(df):
-    # Подготовка данных
     planners = df['planner type'].unique()
     map_types = df['map type'].unique()
     angles = np.linspace(0, 2 * np.pi, 48, endpoint=False).tolist()
 
-    # Создаем фигуру
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, polar=True)
 
@@ -78,14 +76,10 @@ def build_spider_plot(df):
         'LoRR24-Winner+GG': '#9467bd',  # Same as LoRR24-Winner
     }
 
-    # Для каждого planner type рисуем свой график
-    for planner in ['PIBT', 'Causal PIBT', 'EPIBT(3)', 'WPPL', 'LoRR24-Winner', 'EPIBT(3)+LNS', 'Causal PIBT+traffic flow',
-                    'WPPL+GG',
-                    'LoRR24-Winner+GG', 'EPIBT(3)+LNS+GG']:  # planners:
-        # Фильтруем данные по planner type
+    for planner in ['PIBT', 'Causal PIBT', 'EPIBT(3)', 'WPPL', 'LoRR24-Winner', 'EPIBT(3)+LNS',
+                    'Causal PIBT+traffic flow', 'WPPL+GG', 'LoRR24-Winner+GG', 'EPIBT(3)+LNS+GG']:
         planner_data = df[df['planner type'] == planner]
 
-        # Создаем массив scores в правильном порядке углов
         scores = []
         for m in map_types:
             max_test = 10
@@ -98,11 +92,9 @@ def build_spider_plot(df):
                 val = kek[kek['test id'] == str(test_id)].values
                 scores.append(float(val[0][3] if len(val) > 0 else 0))
 
-        # Замыкаем график (добавляем первую точку в конец)
         scores += scores[:1]
         current_angles = angles + angles[:1]
 
-        # Рисуем линию
         if planner in ['PIBT', 'Causal PIBT', 'EPIBT(3)']:
             ax.plot(current_angles, scores, linewidth=3, linestyle='-', label=planner, color=color_map[planner])
         elif "+GG" in planner or "+traffic flow" in planner:
@@ -110,12 +102,13 @@ def build_spider_plot(df):
         else:
             ax.plot(current_angles, scores, linewidth=3, linestyle=':', label=planner, color=color_map[planner])
 
-    # Настройки графика
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
     ax.set_rlabel_position(0)
     plt.yticks(fontweight='bold', fontsize=16)
-    plt.xticks(np.linspace(0, 2 * np.pi, 5, endpoint=False).tolist(), ['Paris-1-256', 'brc202d', 'random-32-32-20', 'sortation', 'warehouse'], fontweight='bold', fontsize=20)  # map_types
+    plt.xticks(np.linspace(0, 2 * np.pi, 5, endpoint=False).tolist(),
+               ['Paris-1-256', 'brc202d', 'random-32-32-20', 'sortation', 'warehouse'], fontweight='bold',
+               fontsize=20)
     ax.tick_params(axis='x', which='major', pad=35)
     plt.ylim(0, 1)
     plt.legend(prop={'weight': 'bold', 'size': 15}, loc='lower left', bbox_to_anchor=(0.7, 0.8))
