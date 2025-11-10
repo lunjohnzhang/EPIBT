@@ -4,7 +4,7 @@ from pathlib import Path
 
 INPUT_DIRS = ["solutions"]
 OUTPUT_FILENAME = 'metrics.csv'
-REMOVE_ACTIONS = True
+REMOVE_ACTIONS = False
 
 table = {
 }
