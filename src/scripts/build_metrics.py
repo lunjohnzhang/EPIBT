@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from pathlib import Path
 
-INPUT_DIRS = ["solutions"]
+INPUT_DIRS = ["solutions/lmapf-t"]
 OUTPUT_FILENAME = 'metrics.csv'
 REMOVE_ACTIONS = False
 
@@ -12,22 +12,26 @@ table = {
 
 def process_dir(path):
     filename = path / "metrics.csv"
-    if os.path.exists(filename):
-        print("process:", filename)
-        df = pd.read_csv(filename)
-        df = df.T
-        df.columns = df.iloc[0]
-        df = df[1:]
+    if not os.path.exists(filename):
+        return
+    print("process:", filename)
+    df = pd.read_csv(filename)
+    df = df.T
+    df.columns = df.iloc[0]
+    df = df[1:]
 
-        for column_name in df.columns:
-            value = df[column_name].iloc[0]
-            if REMOVE_ACTIONS and (column_name == "F" or column_name == "R" or column_name == "C" \
-                                   or column_name == "E" or column_name == "S" or column_name == "W" or column_name == "N" \
-                                   or column_name == "w"):
-                pass
-            if not column_name in table:
-                table[column_name] = []
-            table[column_name].append(value)
+    for column_name in df.columns:
+        value = df[column_name].iloc[0]
+        if REMOVE_ACTIONS and (column_name == "F" or column_name == "R" or column_name == "C" \
+                               or column_name == "E" or column_name == "S" or column_name == "W" or column_name == "N" \
+                               or column_name == "w"):
+            pass
+        if not column_name in table:
+            table[column_name] = []
+        table[column_name].append(value)
+    if not 'filename' in table:
+        table['filename'] = []
+    table['filename'].append(filename)
 
 
 def scan_directory(path):

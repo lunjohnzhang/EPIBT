@@ -1,3 +1,4 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -6,6 +7,10 @@ import pandas as pd
 from PIL import Image
 from matplotlib.ticker import FixedFormatter
 from matplotlib.ticker import MaxNLocator
+
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+mpl.rcParams['text.usetex'] = False
 
 data = pd.read_csv('metrics.csv', sep=',')
 
@@ -17,50 +22,43 @@ for map_type, grouped in data.groupby('map type'):
     for test_id, grouped2 in grouped:
         best_throughput[map_type + "#" + str(test_id)] = grouped2['throughput'].max()
 
-print(best_throughput)
-
-# [planner_type#map_type]
+# planner_type#map_type
 planner_throughput = {}
 
 for planner_type, grouped in data.groupby('planner type'):
     for map_type, grouped2 in grouped.groupby('map type'):
+        planner_throughput[planner_type + "#" + map_type] = 0
         for test_id, grouped3 in grouped2.groupby('test id'):
-            planner_throughput[planner_type + "#" + map_type + "#" + str(test_id)] = float(grouped3['throughput']) / \
-                                                                                     best_throughput[
-                                                                                         map_type + "#" + str(test_id)]
-
-print(planner_throughput)
+            planner_throughput[planner_type + "#" + map_type] += float(grouped3['throughput'].iloc[0]) / \
+                                                                 best_throughput[map_type + "#" + str(test_id)]
+        if map_type == "RANDOM":
+            planner_throughput[planner_type + "#" + map_type] = planner_throughput[planner_type + "#" + map_type] / 8
+        else:
+            planner_throughput[planner_type + "#" + map_type] = planner_throughput[planner_type + "#" + map_type] / 10
 
 data = {
     'planner type': [],
     'map type': [],
-    'test id': [],
     'score': [],
 }
 
 for key in planner_throughput:
-    planner_type, map_type, test_id = key.split('#')
-    print(planner_type, map_type, test_id, planner_throughput[key])
+    planner_type, map_type = key.split('#')
     data['planner type'].append(planner_type)
     data['map type'].append(map_type)
-    data['test id'].append(test_id)
     data['score'].append(planner_throughput[key])
 
 df = pd.DataFrame(data)
-print(df)
-
 df.to_csv('table.csv', index=False)
 
 
 def build_spider_plot(df):
-    planners = df['planner type'].unique()
+    # planners = df['planner type'].unique()
     map_types = df['map type'].unique()
-    angles = np.linspace(0, 2 * np.pi, 48, endpoint=False).tolist()
+    angles = np.linspace(0, 2 * np.pi, len(map_types), endpoint=False).tolist()
 
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, polar=True)
-
-    print(planners)
 
     # Define color mapping for related planners
     color_map = {
@@ -82,15 +80,8 @@ def build_spider_plot(df):
 
         scores = []
         for m in map_types:
-            max_test = 10
-            if m == "RANDOM":
-                max_test = 8
-            for test_id in range(max_test):
-                # val = planner_data[planner_data['map type'] == m and planner_data['test id'] == test_id]['score'].values
-                # scores.append(val[0] if len(val) > 0 else 0)
-                kek = planner_data[planner_data['map type'] == m]
-                val = kek[kek['test id'] == str(test_id)].values
-                scores.append(float(val[0][3] if len(val) > 0 else 0))
+            val = planner_data[planner_data['map type'] == m]['score'].values
+            scores.append(val[0] if len(val) > 0 else 0)
 
         scores += scores[:1]
         current_angles = angles + angles[:1]
@@ -106,9 +97,8 @@ def build_spider_plot(df):
     ax.set_theta_direction(-1)
     ax.set_rlabel_position(0)
     plt.yticks(fontweight='bold', fontsize=16)
-    plt.xticks(np.linspace(0, 2 * np.pi, 5, endpoint=False).tolist(),
-               ['Paris-1-256', 'brc202d', 'random-32-32-20', 'sortation', 'warehouse'], fontweight='bold',
-               fontsize=20)
+    plt.xticks(angles, ['Paris-1-256', 'brc202d', 'random-32-32-20', 'sortation', 'warehouse'], fontweight='bold',
+               fontsize=20)  # map_types
     ax.tick_params(axis='x', which='major', pad=35)
     plt.ylim(0, 1)
     plt.legend(prop={'weight': 'bold', 'size': 15}, loc='lower left', bbox_to_anchor=(0.7, 0.8))

@@ -1,3 +1,4 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -7,11 +8,20 @@ from PIL import Image
 from matplotlib.ticker import FixedFormatter
 from matplotlib.ticker import MaxNLocator
 
-PRINT_TIME = True
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+mpl.rcParams['text.usetex'] = False
+
+ENABLE_PRINT_TIME = True
+ENABLE_TIME_SCALE_LOG = True
 
 PLANNERS = [
-    'PIBT',
-    'EPIBT(3)',
+    'Causal PIBT+traffic flow',
+    'EPIBT(3)+LNS',
+    'EPIBT(4)+LNS',
+    'EPIBT(5)+LNS',
+    'LoRR24-Winner',
+    'WPPL'
 ]
 
 MARKERS = ['o', 'v', 's', 'p', '*', 'x', 'D', 'P']
@@ -59,7 +69,7 @@ def add_map(map_name, map_text, column):
         if True:
             if len(maps) == 1:
                 ax = axes[0]
-            elif not PRINT_TIME:
+            elif not ENABLE_PRINT_TIME:
                 ax = axes[column]
             else:
                 ax = axes[0][column]
@@ -70,10 +80,10 @@ def add_map(map_name, map_text, column):
                 ax.set_ylabel('Throughput')
             ax.grid(True)
 
-        if PRINT_TIME:
+        if ENABLE_PRINT_TIME:
             if len(maps) == 1:
                 ax = axes[1]
-            elif not PRINT_TIME:
+            elif not ENABLE_PRINT_TIME:
                 ax = axes[column]
             else:
                 ax = axes[1][column]
@@ -84,12 +94,16 @@ def add_map(map_name, map_text, column):
             ax.grid(True)
             ax.set_xlabel('Number of Agents')
 
+            if ENABLE_TIME_SCALE_LOG:
+                ax.set_yscale('log')
+                ax.set_ylim(0.07, 1500)
+
     if is_first:
         is_first = False
 
     if len(maps) == 1:
         ax = axes[0]
-    elif not PRINT_TIME:
+    elif not ENABLE_PRINT_TIME:
         ax = axes[column]
     else:
         ax = axes[0][column]
@@ -99,7 +113,7 @@ def add_map(map_name, map_text, column):
 
 if __name__ == '__main__':
     row_len = 1
-    if PRINT_TIME:
+    if ENABLE_PRINT_TIME:
         row_len = 2
     fig, axes = plt.subplots(row_len, len(maps), figsize=(16, 3 * row_len))
 
@@ -122,5 +136,5 @@ if __name__ == '__main__':
             labels.pop(-1)
         else:
             break
-    fig.legend(lines, labels, loc='lower center', ncol=8, borderaxespad=0.2)
+    fig.legend(lines, labels, loc='lower center', ncol=4, borderaxespad=0.2)
     plt.savefig("metrics_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.35)

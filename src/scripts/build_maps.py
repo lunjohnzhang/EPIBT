@@ -1,7 +1,12 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.backends.backend_pdf import PdfPages
 import os
+
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
+mpl.rcParams['text.usetex'] = False
 
 images = {
     'random': 'image/random.png',
@@ -33,6 +38,7 @@ ax3.set_xticks([])
 ax3.set_yticks([])
 
 ax4 = plt.subplot(gs[1, 1:])
+ax4.axis('off')
 inner_gs = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=gs[1, 1:], hspace=1)
 
 ax4_1 = plt.subplot(inner_gs[0])
@@ -48,4 +54,4 @@ ax4_2.set_xticks([])
 ax4_2.set_yticks([])
 
 plt.tight_layout()
-plt.savefig("src/scripts/metrics_plot.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.2)
+plt.savefig("maps.pdf", format='pdf', bbox_inches="tight", dpi=800, pad_inches=0.2)
