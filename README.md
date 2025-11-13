@@ -1,4 +1,4 @@
-# Open Multi-Agent PathFinding System
+# Enhancing PIBT via Multi-Action Operations
 
 The code repository of the paper "Enhancing PIBT via Multi-Action Operations"(AAAI-26).
 
