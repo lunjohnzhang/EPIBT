@@ -18,7 +18,7 @@ The tests are in the [tests](tests) folder. The tests store 5 maps: `random` (ra
 
 ## Logs
 
-Experiment logs are located [here](https://github.com/Straple/OMAPFS_Solutions).
+Experiment logs are located [here](https://github.com/Straple/EPIBT/tree/metrics).
 
 ## Building
 
