@@ -42,8 +42,23 @@ std::istream &operator>>(std::istream &input, Map &map) {
             map.map[row * map.cols + col + 1] = (line[col] == '.');
         }
     }
+
+    // Populate free_locations
+    for (uint32_t pos = 1; pos < map.get_size(); pos++) {
+        if (map.is_free(pos)) {
+            map.free_locations.push_back(pos);
+        }
+    }
+
     return input;
 }
+
+uint32_t Map::sample_free_location(Randomizer &rnd) const {
+    ASSERT(!free_locations.empty(), "no free locations available to sample");
+    uint32_t index = rnd.get(0, free_locations.size() - 1);
+    return free_locations[index];
+}
+
 
 Map &get_map() {
     static Map map;

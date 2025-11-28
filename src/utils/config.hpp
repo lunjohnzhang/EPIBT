@@ -19,6 +19,11 @@ struct RuntimeConfig {
     std::string output_path = "solutions";
     uint32_t steps_num = 1000;
     uint32_t step_time = 1000;
+
+    // Automatically generate robot init positions and tasks
+    int n_robots = -1;
+    int n_tasks = -1;
+    int seed = 0;
 };
 
 RuntimeConfig load_config(const std::string &config_file = "config.json");

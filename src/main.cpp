@@ -106,108 +106,124 @@ int main(int argc, char *argv[]) {
 
     std::mutex mutex;
 
-    std::vector<bool> visited;
-    for (uint32_t i = 0;; i++) {
-        std::string filename = config.agents_path + "/agents_" + std::to_string(i) + ".csv";
-        if (!std::filesystem::exists(filename)) {
-            break;
+
+    if (config.n_tasks > 0) {
+        Robots robots(config.n_robots);
+        robots.initialize_start_positions(get_map(), config.seed);
+        TaskPool task_pool;
+        task_pool.gen_random_tasks(config.n_tasks, get_map(), config.seed);
+
+        TestSystem test_system(robots, task_pool);
+
+        Answer answer = test_system.simulate(config.steps_num);
+
+        answer.write_result_to_json(config.output_path + "result.json");
+
+    } else {
+        std::vector<bool> visited;
+        for (uint32_t i = 0;; i++) {
+            std::string filename = config.agents_path + "/agents_" + std::to_string(i) + ".csv";
+            if (!std::filesystem::exists(filename)) {
+                break;
+            }
+            visited.push_back(false);
         }
-        visited.push_back(false);
-    }
-    if (visited.empty()) {
-        visited.push_back(false);
-    }
+        if (visited.empty()) {
+            visited.push_back(false);
+        }
 
-    std::cout << "The preparation is over: " << main_timer << std::endl;
+        std::cout << "The preparation is over: " << main_timer << std::endl;
 
-    launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
-        for (uint32_t test = 0; test < visited.size(); test++) {
-            {
-                std::unique_lock locker(mutex);
-                if (visited[test]) {
-                    continue;
+        launch_threads(THREADS_NUM_VALUE, [&](uint32_t thr) {
+            for (uint32_t test = 0; test < visited.size(); test++) {
+                {
+                    std::unique_lock locker(mutex);
+                    if (visited[test]) {
+                        continue;
+                    }
+                    visited[test] = true;
+                    std::cout << "Start test " << test << ", thr: " << thr << std::endl;
                 }
-                visited[test] = true;
-                std::cout << "Start test " << test << ", thr: " << thr << std::endl;
-            }
 
-            Timer timer;
+                Timer timer;
 
-            Robots robots;
-            if (config.agents_path.size() >= 4 && config.agents_path.substr(config.agents_path.size() - 4) == ".csv") {
-                std::ifstream(config.agents_path) >> robots;
-            } else {
-                std::ifstream(config.agents_path + "/agents_" + std::to_string(test) + ".csv") >> robots;
-            }
-
-            TaskPool task_pool;
-            if (config.tasks_path.size() >= 4 && config.tasks_path.substr(config.tasks_path.size() - 4) == ".csv") {
-                std::ifstream(config.tasks_path) >> task_pool;
-            } else {
-                std::ifstream(config.tasks_path + "/tasks_" + std::to_string(test) + ".csv") >> task_pool;
-            }
-
-            TestSystem test_system(robots, task_pool);
-
-            std::string test_dir = config.output_path + std::to_string(test) + "/";
-            std::filesystem::create_directories(test_dir);
-
-            Answer answer = test_system.simulate(config.steps_num);
-
-            answer.write_log(std::ofstream(test_dir + "log.csv"));
-
-            for (uint32_t action = 0; action <= ACTIONS_NUM; action++) {
-                std::string filename = test_dir + "heatmap_";
-                if (action < ACTIONS_NUM) {
-                    filename += action_to_char(static_cast<ActionType>(action));
+                Robots robots;
+                if (config.agents_path.size() >= 4 && config.agents_path.substr(config.agents_path.size() - 4) == ".csv") {
+                    std::ifstream(config.agents_path) >> robots;
                 } else {
-                    filename += "all";
+                    std::ifstream(config.agents_path + "/agents_" + std::to_string(test) + ".csv") >> robots;
                 }
-                filename += ".csv";
-                answer.write_heatmap(std::ofstream(filename), action);
-            }
 
-            {
-                std::ofstream output(test_dir + "metrics.csv");
-                output << "metric,value\n";
-                output << "task type,";
+                TaskPool task_pool;
+                if (config.tasks_path.size() >= 4 && config.tasks_path.substr(config.tasks_path.size() - 4) == ".csv") {
+                    std::ifstream(config.tasks_path) >> task_pool;
+                } else {
+                    std::ifstream(config.tasks_path + "/tasks_" + std::to_string(test) + ".csv") >> task_pool;
+                }
+
+                TestSystem test_system(robots, task_pool);
+
+                std::string test_dir = config.output_path + std::to_string(test) + "/";
+                std::filesystem::create_directories(test_dir);
+
+                Answer answer = test_system.simulate(config.steps_num);
+
+                answer.write_log(std::ofstream(test_dir + "log.csv"));
+
+                for (uint32_t action = 0; action <= ACTIONS_NUM; action++) {
+                    std::string filename = test_dir + "heatmap_";
+                    if (action < ACTIONS_NUM) {
+                        filename += action_to_char(static_cast<ActionType>(action));
+                    } else {
+                        filename += "all";
+                    }
+                    filename += ".csv";
+                    answer.write_heatmap(std::ofstream(filename), action);
+                }
+
+                {
+                    std::ofstream output(test_dir + "metrics.csv");
+                    output << "metric,value\n";
+                    output << "task type,";
 #ifdef ENABLE_ROTATE_MODEL
-                output << "LMAPF-T\n";
+                    output << "LMAPF-T\n";
 #else
                 output << "LMAPF\n";
 #endif
-                output << "map type," << map_type_to_string(config.map_type) << '\n';
-                output << "test id," << test << '\n';
-                output << "scheduler type," << scheduler_type_to_string(config.scheduler_type) << '\n';
-                output << "planner type," << planner_type_to_string(config.planner_type);
-                if (config.planner_type == PlannerType::EPIBT || config.planner_type == PlannerType::EPIBT_LNS || config.planner_type == PlannerType::PEPIBT_LNS) {
-                    output << "(" << EPIBT_DEPTH_VALUE << ")";
-                }
-                output << '\n';
-                output << "graph guidance type,";
-                if (config.graph_guidance_type == GraphGuidanceType::ENABLE) {
-                    output << "enable\n";
-                } else {
-                    output << "disable\n";
-                }
-                output << "agents num," << robots.size() << '\n';
-                output << "steps num," << config.steps_num << '\n';
-                output << "finished tasks," << answer.finished_tasks.size() << '\n';
-                output << "throughput," << static_cast<double>(answer.finished_tasks.size()) / config.steps_num << '\n';
-                for (uint32_t action = 0; action < ACTIONS_NUM; action++) {
-                    output << action_to_char(static_cast<ActionType>(action)) << "," << static_cast<double>(answer.actions_num.back()[action]) * 100 / config.steps_num / robots.size() << "\n";
-                }
-                output << "avg step time (ms)," << std::accumulate(answer.step_time.begin(), answer.step_time.end(), 0.0) * 1000 / config.steps_num << '\n';
-                output << "avg scheduler time (ms)," << std::accumulate(answer.scheduler_time.begin(), answer.scheduler_time.end(), 0.0) * 1000 / config.steps_num << '\n';
-                output << "avg planner time (ms)," << std::accumulate(answer.planner_time.begin(), answer.planner_time.end(), 0.0) * 1000 / config.steps_num << '\n';
+                    output << "map type," << map_type_to_string(config.map_type) << '\n';
+                    output << "test id," << test << '\n';
+                    output << "scheduler type," << scheduler_type_to_string(config.scheduler_type) << '\n';
+                    output << "planner type," << planner_type_to_string(config.planner_type);
+                    if (config.planner_type == PlannerType::EPIBT || config.planner_type == PlannerType::EPIBT_LNS || config.planner_type == PlannerType::PEPIBT_LNS) {
+                        output << "(" << EPIBT_DEPTH_VALUE << ")";
+                    }
+                    output << '\n';
+                    output << "graph guidance type,";
+                    if (config.graph_guidance_type == GraphGuidanceType::ENABLE) {
+                        output << "enable\n";
+                    } else {
+                        output << "disable\n";
+                    }
+                    output << "agents num," << robots.size() << '\n';
+                    output << "steps num," << config.steps_num << '\n';
+                    output << "finished tasks," << answer.finished_tasks.size() << '\n';
+                    output << "throughput," << static_cast<double>(answer.finished_tasks.size()) / config.steps_num << '\n';
+                    for (uint32_t action = 0; action < ACTIONS_NUM; action++) {
+                        output << action_to_char(static_cast<ActionType>(action)) << "," << static_cast<double>(answer.actions_num.back()[action]) * 100 / config.steps_num / robots.size() << "\n";
+                    }
+                    output << "avg step time (ms)," << std::accumulate(answer.step_time.begin(), answer.step_time.end(), 0.0) * 1000 / config.steps_num << '\n';
+                    output << "avg scheduler time (ms)," << std::accumulate(answer.scheduler_time.begin(), answer.scheduler_time.end(), 0.0) * 1000 / config.steps_num << '\n';
+                    output << "avg planner time (ms)," << std::accumulate(answer.planner_time.begin(), answer.planner_time.end(), 0.0) * 1000 / config.steps_num << '\n';
 
-                {
-                    std::unique_lock locker(mutex);
-                    std::cout << "Done  test " << test << ", thr: " << thr << ", time: " << timer << std::endl;
+                    {
+                        std::unique_lock locker(mutex);
+                        std::cout << "Done  test " << test << ", thr: " << thr << ", time: " << timer << std::endl;
+                    }
                 }
             }
-        }
-    });
+        });
+    }
+
 
     std::cout << "===Done===" << std::endl;
     std::cout << "Total time: " << main_timer << std::endl;

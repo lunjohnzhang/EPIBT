@@ -3,9 +3,12 @@
 #include <environment/graph.hpp>
 #include <utils/assert.hpp>
 
+#include <fstream>
 #include <iomanip>
 #include <numeric>
 #include <unordered_map>
+
+#include <nlohmann/json.hpp>
 
 void Answer::validate_actions(uint32_t step) const {
     std::unordered_map<uint32_t, uint32_t> pos_usage, edge_usage;
@@ -108,4 +111,17 @@ void Answer::write_agent() const {
     for (auto action: robots[r].actions) {
         std::cout << action_to_char(action);
     }
+}
+
+void Answer::write_result_to_json(const std::string &filename) const {
+    std::ofstream file(filename);
+    nlohmann::json result;
+    double throughput = static_cast<double>(this->finished_tasks.size()) / this->steps_num;
+
+    result = {
+        {"throughput", throughput},
+        {"finished_tasks", this->finished_tasks.size()},
+    };
+
+    file << std::setw(4) << result << std::endl;
 }

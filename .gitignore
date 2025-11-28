@@ -11,3 +11,4 @@ venv
 CMakePresets.json
 bin
 solutions
+outputs

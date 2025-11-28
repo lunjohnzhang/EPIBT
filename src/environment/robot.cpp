@@ -51,3 +51,26 @@ std::istream &operator>>(std::istream &input, Robots &robots) {
     }
     return input;
 }
+
+void Robots::initialize_start_positions(const Map &map, int seed) {
+    ASSERT(robots.size() <= map.get_free_locations().size(), "not enough free locations to place all robots");
+
+    Randomizer rnd(seed);
+    std::vector<uint32_t> free_locs = map.get_free_locations();
+    std::shuffle(free_locs.begin(), free_locs.end(), rnd.generator);
+
+    for (uint32_t i = 0; i < robots.size(); i++) {
+        uint32_t pos = free_locs[i];
+        ASSERT(map.is_free(pos), "is not free");
+        pos -= 1; // convert to 0-based index 
+        uint32_t row = pos / map.get_cols();
+        uint32_t col = pos % map.get_cols();
+
+#ifdef ENABLE_ROTATE_MODEL
+        robots[i].pos = Position(row, col, 0);
+#else
+        robots[i].pos = Position(row, col);
+#endif
+        robots[i].node = get_graph().get_node(robots[i].pos);
+    }
+}

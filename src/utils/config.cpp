@@ -89,6 +89,16 @@ RuntimeConfig load_config(const std::string &config_file) {
         config.step_time = std::stoi(parsed["step_time"]);
     }
 
+    if (parsed.count("n_robots")) {
+        config.n_robots = std::stoi(parsed["n_robots"]);
+    }
+    if (parsed.count("n_tasks")) {
+        config.n_tasks = std::stoi(parsed["n_tasks"]);
+    }
+    if (parsed.count("seed")) {
+        config.seed = std::stoi(parsed["seed"]);
+    }
+
     std::cout << "Successfully loaded config from '" << config_file << "'" << std::endl;
     return config;
 }
@@ -108,6 +118,8 @@ void save_config(const RuntimeConfig &config, const std::string &config_file) {
     file << "map_file = " << config.map_file << "\n";
     file << "tasks_path = " << config.tasks_path << "\n";
     file << "agents_path = " << config.agents_path << "\n";
+    file << "n_robots = " << config.n_robots << "\n";
+    file << "n_tasks = " << config.n_tasks << "\n";
 
     file.close();
     std::cout << "Saved config to '" << config_file << "'" << std::endl;
@@ -137,5 +149,7 @@ void apply_runtime_config(const RuntimeConfig &config) {
     std::cout << "  Output path: " << config.output_path << '\n';
     std::cout << "  Steps num: " << config.steps_num << '\n';
     std::cout << "  Step time: " << config.step_time << '\n';
+    std::cout << "  N robots: " << config.n_robots << '\n';
+    std::cout << "  N tasks: " << config.n_tasks << '\n';
     std::cout.flush();
 }
