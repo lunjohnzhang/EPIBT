@@ -1,0 +1,44 @@
+# ## WarehouseConfig ##
+WarehouseConfig.simulation_algo="RHCR"
+WarehouseConfig.obj_type="throughput"
+WarehouseConfig.hamming_only=True
+WarehouseConfig.num_agents=200 # Default, maybe changed
+
+WarehouseConfig.scenario="KIVA"             # scenario (SORTING, KIVA, ONLINE, BEE)
+WarehouseConfig.task=""                     # input task file
+WarehouseConfig.cutoffTime=2                # cutoff time (seconds)
+WarehouseConfig.screen=0                    # screen option (0: none; 1: results; 2:all)
+WarehouseConfig.solver="EPIBT"            # solver (LRA, PBS, WHCA, ECBS, WinPIBT)
+WarehouseConfig.id=False                    # independence detection
+WarehouseConfig.single_agent_solver="ASTAR" # single-agent solver (ASTAR, SIPP)
+WarehouseConfig.lazyP=False                 # use lazy priority
+WarehouseConfig.simulation_time=1000        # run simulation
+WarehouseConfig.simulation_window=3         # call the planner every simulation_window timesteps
+WarehouseConfig.pibt_window_size=3          # the size of the PIBT window
+WarehouseConfig.planning_window=3           # the planner outputs plans with
+                                            # first planning_window timesteps
+                                            # collision-free
+WarehouseConfig.pibt_max_replan=200
+WarehouseConfig.travel_time_window=0        # consider the traffic jams within the given window
+WarehouseConfig.potential_function="NONE"   # potential function (NONE, SOC, IC)
+WarehouseConfig.potential_threshold=0       # potential threshold
+WarehouseConfig.rotation=False              # consider rotation
+WarehouseConfig.rotation_time=1             # rotation time
+WarehouseConfig.robust=0                    # k-robust (for now, only work for PBS)
+WarehouseConfig.CAT=False                   # use conflict-avoidance table
+WarehouseConfig.hold_endpoints=False        # Hold endpoints from Ma et al, AAMAS 2017
+WarehouseConfig.dummy_paths=False           # Find dummy paths from Liu et al, AAMAS 2019
+WarehouseConfig.prioritize_start=True       # Prioritize waiting at start locations
+WarehouseConfig.suboptimal_bound=1          # Suboptimal bound for ECBS
+WarehouseConfig.log=False                   # save the search trees (and the priority trees)
+WarehouseConfig.aggregation_type = "mean"
+WarehouseConfig.measure_names = ["tile_usage_std", "all_task_len_mean"]
+WarehouseConfig.test=False
+WarehouseConfig.use_warm_up=True
+WarehouseConfig.save_result=False
+WarehouseConfig.save_solver=False
+WarehouseConfig.save_heuristics_table=False
+# WarehouseConfig.stop_at_traffic_jam=True
+WarehouseConfig.left_w_weight = 1.0
+WarehouseConfig.right_w_weight = 1.0
+WarehouseConfig.stop_at_traffic_jam = False

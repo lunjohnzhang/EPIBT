@@ -10,7 +10,7 @@ option(ENABLE_ROTATE_MODEL "Enable rotation model instead of directional model" 
 option(ENABLE_EPIBT_IO "Enable inheritance of operations in the EPIBT-like algorithms" ON)
 
 # Configurable compile-time values
-set(THREADS_NUM "10" CACHE STRING "Allowed number of threads")
+set(THREADS_NUM "1" CACHE STRING "Allowed number of threads")
 set(EPIBT_DEPTH "3" CACHE STRING "Depth for operations in the EPIBT-like algorithms")
 set(EPIBT_REVISIT "10" CACHE STRING "The allowed number of visits for each agent in the EPIBT-like algorithms")
 

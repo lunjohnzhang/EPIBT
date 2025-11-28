@@ -1,0 +1,3 @@
+include "config/pebble_motion/EPIBT_w-3.gin"
+
+WarehouseConfig.rotation=True

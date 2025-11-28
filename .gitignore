@@ -4,7 +4,7 @@ Dockerfile
 local
 .DS_Store
 python/tmp
-python/__pycache__
+**/__pycache__
 .idea
 .cache
 venv
@@ -12,3 +12,5 @@ CMakePresets.json
 bin
 solutions
 outputs
+run_files
+logs
