@@ -25,8 +25,8 @@ enum class PlannerType : uint8_t {
 };
 
 enum class SchedulerType : uint8_t {
-    CONST,
-    GREEDY,
+    CONST,     // use task given in files
+    GREEDY,    // use greedy scheduler
 
     NUM
 };

@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <vector>
 
+#include <environment/map.hpp>
+#include <utils/randomizer.hpp>
+
 struct Task {
     uint32_t task_id = -1;
     uint32_t agent_assigned = -1;
@@ -50,4 +53,6 @@ public:
     uint32_t gen_const_next_task(uint32_t r, uint32_t agents_num);
 
     friend std::istream &operator>>(std::istream &input, TaskPool &pool);
+
+    void gen_random_tasks(int n_tasks, const Map &map, int seed);
 };

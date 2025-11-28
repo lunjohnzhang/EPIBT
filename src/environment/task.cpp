@@ -80,3 +80,13 @@ std::istream &operator>>(std::istream &input, TaskPool &pool) {
     }
     return input;
 }
+
+void TaskPool::gen_random_tasks(int n_tasks, const Map &map, int seed) {
+    Randomizer rnd(seed);
+    for (int i = 0; i < n_tasks; i++) {
+        this->task_targets.emplace_back();
+        uint32_t pos = map.sample_free_location(rnd);
+        ASSERT(map.is_free(pos), "is not free");
+        this->task_targets.back().push_back(pos);
+    }
+}

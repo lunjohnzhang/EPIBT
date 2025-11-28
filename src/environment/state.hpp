@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ENABLE_ROTATE_MODEL
+
 #include <cstdint>
 #include <vector>
 
@@ -22,4 +22,3 @@ struct State {
 };
 
 using RobotPath = std::vector<State>;
-#endif

@@ -57,5 +57,8 @@ struct Answer {
     void write_log(std::ostream &&output) const;
 
     void write_agent() const;
+
+    // Write result to a JSON file in RHCR format.
+    void write_result_to_json(const std::string &filename) const;
 };
 

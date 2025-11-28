@@ -1,6 +1,8 @@
 #pragma once
 
+#include <environment/map.hpp>
 #include <environment/position.hpp>
+#include <utils/randomizer.hpp>
 
 #include <istream>
 #include <vector>
@@ -30,4 +32,6 @@ public:
     [[nodiscard]] uint32_t size() const;
 
     friend std::istream &operator>>(std::istream &input, Robots &robots);
+
+    void initialize_start_positions(const Map &map, int seed);
 };

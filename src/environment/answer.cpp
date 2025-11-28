@@ -3,9 +3,12 @@
 #include <environment/graph.hpp>
 #include <utils/assert.hpp>
 
+#include <fstream>
 #include <iomanip>
 #include <numeric>
 #include <unordered_map>
+
+#include <nlohmann/json.hpp>
 
 void Answer::validate_actions(uint32_t step) const {
     std::unordered_map<uint32_t, uint32_t> pos_usage, edge_usage;
@@ -108,4 +111,50 @@ void Answer::write_agent() const {
     for (auto action: robots[r].actions) {
         std::cout << action_to_char(action);
     }
+}
+
+void Answer::write_result_to_json(const std::string &filename) const {
+    std::ofstream file(filename);
+    nlohmann::json result;
+    double throughput = static_cast<double>(this->finished_tasks.size()) / this->steps_num;
+    double cpu_runtime = std::accumulate(this->step_time.begin(), this->step_time.end(), 0.0);
+    std::cout << "Throughput: " << throughput << ", CPU runtime: " << cpu_runtime << "s" << std::endl;
+    // Flatten the heatmap and add to JSON
+    std::vector<uint64_t> vertex_wait_matrix;
+    std::vector<uint64_t> move_usage_matrix;
+    std::vector<uint64_t> cr_usage_matrix;
+    std::vector<uint64_t> ccr_usage_matrix;
+    for (const auto &row: this->heatmap) {
+        for (const auto &usage: row) {
+            // WAIT action is at the last index
+            vertex_wait_matrix.push_back(usage[static_cast<uint32_t>(ActionType::WAIT)]);
+#ifdef ENABLE_ROTATE_MODEL
+            // With rotation model, only FORWARD is moving
+            move_usage_matrix.push_back(usage[static_cast<uint32_t>(ActionType::FORWARD)]);
+            cr_usage_matrix.push_back(usage[static_cast<uint32_t>(ActionType::ROTATE)]);
+            ccr_usage_matrix.push_back(usage[static_cast<uint32_t>(ActionType::COUNTER_ROTATE)]);
+#else
+            // Without rotation model, sum all directional moves
+            move_usage_matrix.push_back(
+                    usage[static_cast<uint32_t>(ActionType::EAST)] +
+                    usage[static_cast<uint32_t>(ActionType::SOUTH)] +
+                    usage[static_cast<uint32_t>(ActionType::WEST)] +
+                    usage[static_cast<uint32_t>(ActionType::NORTH)]);
+#endif
+        }
+    }
+
+    result = {
+            {"success", true},
+            {"throughput", throughput},
+            {"cpu_runtime", cpu_runtime},
+            {"vertex_wait_matrix", vertex_wait_matrix},
+            {"move_usage_matrix", move_usage_matrix},
+#ifdef ENABLE_ROTATE_MODEL
+            {"cr_usage_matrix", cr_usage_matrix},
+            {"ccr_usage_matrix", ccr_usage_matrix},
+#endif
+    };
+
+    file << std::setw(4) << result << std::endl;
 }
