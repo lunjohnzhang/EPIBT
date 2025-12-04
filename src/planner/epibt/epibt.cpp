@@ -44,9 +44,9 @@ uint32_t EPIBT::get_used(uint32_t r) const {
 }
 
 int64_t EPIBT::get_smart_dist_IMPL(uint32_t r, uint32_t desired) const {
-    if (robots[r].is_disable()) {
-        return desired;
-    }
+    // if (robots[r].is_disable()) {
+    //     return desired;
+    // }
 
     const auto &op = get_operations()[desired];
     const auto &path = get_omap().get_nodes_path(robots[r].node, desired);
@@ -208,9 +208,9 @@ EPIBT::EPIBT(Robots &new_robots, TimePoint end_time, const std::vector<uint32_t>
         robot_power.resize(robots.size());
         for (uint32_t r = 0; r < robots.size(); r++) {
             double power = (max_weight - weight[r]) * 1.0 / max_weight;
-            if (robots[r].is_disable()) {
-                power = 0;
-            }
+            // if (robots[r].is_disable()) {
+            //     power = 0;
+            // }
             power = power * power;
             robot_power[r] = power;
         }
